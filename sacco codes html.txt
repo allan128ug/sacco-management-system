@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ALLAN SACCO SYSTEM V1.0 ULTRA CLEAN - FOR CLIENT</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-100">
+<div id="loginScreen" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-900 to-yellow-600 p-4">
+<div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
+<h1 class="text-2xl font-black text-center text-green-900">ALLAN SACCO SYSTEM</h1>
+<p class="text-center text-sm font-bold text-yellow-600 mb-1">V1.0 ULTRA CLEAN - FOR CLIENT</p>
+<p class="text-center text-xs text-gray-500 mb-6">MTN MoMo: 0795390878 | Super Admin Hidden</p>
+<div id="loginError" class="hidden bg-red-100 text-red-700 p-2 rounded text-sm mb-3 text-center"></div>
+<label class="text-xs font-bold">Username</label>
+<input id="loginUser" class="w-full border-2 p-3 rounded-lg mb-3" placeholder="Enter username">
+<label class="text-xs font-bold">Password</label>
+<div class="relative mb-4">
+<input id="loginPass" type="password" class="w-full border-2 p-3 rounded-lg" placeholder="Enter password">
+<button onclick="document.getElementById('loginPass').type = document.getElementById('loginPass').type=='password'?'text':'password'" class="absolute right-3 top-3 text-gray-500"><i class="fa fa-eye"></i></button>
+</div>
+<button onclick="doLogin()" class="w-full bg-green-900 text-white p-3 rounded-lg font-black">LOGIN</button>
+<div class="mt-6 text-center"><p class="text-[11px] text-gray-400">Secure SACCO Login - Contact Admin for access</p></div>
+</div>
+</div>
+<div id="appScreen" class="hidden min-h-screen flex">
+<div class="w-64 bg-green-950 text-white flex flex-col">
+<div class="p-4 border-b border-green-800"><h2 class="font-black text-lg">SACCO SYSTEM</h2><p class="text-xs text-yellow-300">V1.0 | <span id="sideUser"></span> - <span id="sideRole"></span></p><p id="permBadge" class="text-[10px] mt-1"></p></div>
+<div class="flex-1 overflow-y-auto p-2 space-y-1 text-sm">
+<button onclick="showModule('dashboard')" class="w-full text-left p-2.5 rounded hover:bg-green-800">Dashboard</button>
+<button onclick="showModule('members')" class="w-full text-left p-2.5 rounded hover:bg-green-800">Members</button>
+<button onclick="showModule('shares')" class="w-full text-left p-2.5 rounded hover:bg-green-800">Shares</button>
+<button onclick="showModule('savings')" class="w-full text-left p-2.5 rounded hover:bg-green-800">Savings</button>
+<button onclick="showModule('loans')" class="w-full text-left p-2.5 rounded hover:bg-green-800">Loans</button>
+<button onclick="showModule('repay')" class="w-full text-left p-2.5 rounded hover:bg-green-800">Repayments</button>
+<button onclick="showModule('expenses')" class="w-full text-left p-2.5 rounded hover:bg-green-800">Expenses</button>
+<button onclick="showModule('statement')" class="w-full text-left p-2.5 rounded bg-yellow-600">Statement</button>
+<button onclick="showModule('reports')" class="w-full text-left p-2.5 rounded hover:bg-green-800">Reports</button>
+<button id="btnStaff" onclick="showModule('staff')" class="w-full text-left p-2.5 rounded hover:bg-green-800 hidden">Staff (Super Admin Only)</button>
+<button onclick="showModule('changepass')" class="w-full text-left p-2.5 rounded bg-black font-bold">Change Password</button>
+<button onclick="showModule('share')" class="w-full text-left p-2.5 rounded hover:bg-green-800">Share / QR</button>
+</div>
+<div class="p-3"><button onclick="doLogout()" class="w-full bg-red-600 p-2.5 rounded font-bold">Logout</button></div>
+</div>
+<div class="flex-1 overflow-y-auto p-6">
+<div id="mod-dashboard" class="module">
+<h1 class="text-2xl font-black mb-4">Dashboard - SACCO V1.0 ULTRA CLEAN</h1>
+<div id="dashPermInfo" class="p-3 rounded text-sm mb-4"></div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+<div class="bg-white p-4 rounded-xl shadow"><p class="text-xs">Members</p><p id="dashMembers" class="text-xl font-black">0</p></div>
+<div class="bg-green-600 text-white p-4 rounded-xl shadow"><p class="text-xs">Total Savings</p><p id="dashSavings" class="text-xl font-black">UGX 0</p></div>
+<div class="bg-yellow-600 text-white p-4 rounded-xl shadow"><p class="text-xs">Active Loans</p><p id="dashLoans" class="text-xl font-black">UGX 0</p></div>
+<div class="bg-blue-900 text-white p-4 rounded-xl shadow"><p class="text-xs">Profit</p><p id="dashProfit" class="text-xl font-black">UGX 0</p></div>
+</div>
+</div>
+<div id="mod-members" class="module hidden">
+<div class="flex justify-between items-center mb-4"><h1 class="text-xl font-black">Members Management</h1><button onclick="printModule()" class="no-print bg-green-900 text-white px-3 py-1 rounded text-sm">Print</button></div>
+<div class="bg-white p-4 rounded-xl shadow mb-4 no-print grid grid-cols-1 md:grid-cols-5 gap-2">
+<input id="memName" placeholder="Full Name" class="border p-2 rounded"><input id="memPhone" placeholder="Phone" class="border p-2 rounded"><input id="memNIN" placeholder="NIN" class="border p-2 rounded"><input id="memNextKin" placeholder="Next of Kin" class="border p-2 rounded"><button onclick="addMember()" class="bg-green-900 text-white rounded p-2 font-bold">Save Member</button>
+</div>
+<div class="bg-white rounded-xl shadow overflow-auto"><table class="w-full text-sm"><thead class="bg-gray-100"><tr><th class="p-2 text-left">Member No - Name - Phone</th><th class="p-2">NIN</th><th class="p-2">Next of Kin</th><th class="p-2 no-print">Actions</th></tr></thead><tbody id="memTable"></tbody></table></div>
+</div>
+<div id="mod-shares" class="module hidden">
+<div class="flex justify-between items-center mb-4"><h1 class="text-xl font-black">Shares - UGX 20,000 per share</h1><button onclick="printModule()" class="no-print bg-green-900 text-white px-3 py-1 rounded text-sm">Print</button></div>
+<div class="bg-white p-4 rounded-xl shadow mb-4 no-print grid grid-cols-1 md:grid-cols-4 gap-2">
+<select id="shareMember" class="border p-2 rounded"></select><input id="shareQty" type="number" placeholder="No. of Shares" class="border p-2 rounded"><input id="sharePrice" type="number" value="20000" class="border p-2 rounded"><button onclick="addShare()" class="bg-yellow-600 text-white rounded p-2 font-bold">Buy Shares + WhatsApp</button>
+</div>
+<div class="bg-white rounded-xl shadow overflow-auto"><table class="w-full text-sm"><thead class="bg-gray-100"><tr><th class="p-2 text-left">Member</th><th class="p-2">Shares</th><th class="p-2">Total UGX</th><th class="p-2 no-print">Actions</th></tr></thead><tbody id="shareTable"></tbody></table></div>
+</div>
+<div id="mod-savings" class="module hidden">
+<div class="flex justify-between items-center mb-4"><h1 class="text-xl font-black">Savings</h1><button onclick="printModule()" class="no-print bg-green-900 text-white px-3 py-1 rounded text-sm">Print</button></div>
+<div class="bg-white p-4 rounded-xl shadow mb-4 no-print grid grid-cols-1 md:grid-cols-5 gap-2">
+<select id="savMember" class="border p-2 rounded"></select><select id="savType" class="border p-2 rounded"><option>Compulsory</option><option>Voluntary</option><option>Fixed Deposit</option></select><input id="savAmount" type="number" placeholder="Amount UGX" class="border p-2 rounded"><input id="savPhone" placeholder="Phone for WhatsApp" class="border p-2 rounded"><button onclick="addSaving()" class="bg-green-600 text-white rounded p-2 font-bold">Save + WhatsApp</button>
+</div>
+<div class="bg-white rounded-xl shadow overflow-auto"><table class="w-full text-sm"><thead class="bg-gray-100"><tr><th class="p-2 text-left">Member</th><th class="p-2">Type</th><th class="p-2">Amount</th><th class="p-2 no-print">Actions</th></tr></thead><tbody id="savTable"></tbody></table></div>
+</div>
+<div id="mod-loans" class="module hidden">
+<div class="flex justify-between items-center mb-4"><h1 class="text-xl font-black">Loans</h1><button onclick="printModule()" class="no-print bg-green-900 text-white px-3 py-1 rounded text-sm">Print</button></div>
+<div class="bg-white p-4 rounded-xl shadow mb-4 no-print grid grid-cols-1 md:grid-cols-6 gap-2">
+<select id="loanMember" class="border p-2 rounded"></select><select id="loanType" class="border p-2 rounded"><option>Emergency</option><option>Business</option><option>School Fees</option><option>Agriculture</option><option>Boda Loan</option><option>Salary Loan</option></select><input id="loanAmount" type="number" placeholder="Amount UGX" class="border p-2 rounded"><input id="loanRate" type="number" value="10" placeholder="Interest %" class="border p-2 rounded"><input id="loanDuration" type="number" placeholder="Months" class="border p-2 rounded"><button onclick="addLoan()" class="bg-yellow-600 text-white rounded p-2 font-bold">Apply Loan</button>
+</div>
+<div class="bg-white p-4 rounded-xl shadow mb-4 no-print grid grid-cols-1 md:grid-cols-3 gap-2">
+<input id="loanGuarantor" placeholder="Guarantors" class="border p-2 rounded"><input id="loanCollateral" placeholder="Collateral" class="border p-2 rounded"><input id="loanPhone" placeholder="Phone for WhatsApp" class="border p-2 rounded">
+</div>
+<div class="bg-white rounded-xl shadow overflow-auto"><table class="w-full text-sm"><thead class="bg-gray-100"><tr><th class="p-2 text-left">Member - Loan No</th><th class="p-2">Type</th><th class="p-2">Amount + Interest</th><th class="p-2">Guarantor</th><th class="p-2">Status</th><th class="p-2 no-print">Actions</th></tr></thead><tbody id="loanTable"></tbody></table></div>
+</div>
+<div id="mod-repay" class="module hidden">
+<div class="flex justify-between items-center mb-4"><h1 class="text-xl font-black">Loan Repayments</h1><button onclick="printModule()" class="no-print bg-green-900 text-white px-3 py-1 rounded text-sm">Print</button></div>
+<div class="bg-white p-4 rounded-xl shadow mb-4 no-print grid grid-cols-1 md:grid-cols-4 gap-2">
+<select id="repayLoan" class="border p-2 rounded"></select><input id="repayAmount" type="number" placeholder="Amount UGX" class="border p-2 rounded"><input id="repayPhone" placeholder="Phone for WhatsApp" class="border p-2 rounded"><button onclick="addRepay()" class="bg-green-600 text-white rounded p-2 font-bold">Pay + WhatsApp</button>
+</div>
+<div class="bg-white rounded-xl shadow overflow-auto"><table class="w-full text-sm"><thead class="bg-gray-100"><tr><th class="p-2 text-left">Loan - Member</th><th class="p-2">Paid</th><th class="p-2">Date</th><th class="p-2 no-print">Actions</th></tr></thead><tbody id="repayTable"></tbody></table></div>
+</div>
+<div id="mod-expenses" class="module hidden">
+<div class="flex justify-between items-center mb-4"><h1 class="text-xl font-black">Expenses</h1><button onclick="printModule()" class="no-print bg-green-900 text-white px-3 py-1 rounded text-sm">Print</button></div>
+<div class="bg-white p-4 rounded-xl shadow mb-4 no-print grid grid-cols-1 md:grid-cols-4 gap-2">
+<input id="expTitle" placeholder="Expense" class="border p-2 rounded"><input id="expAmount" type="number" placeholder="Amount" class="border p-2 rounded"><input id="expDate" type="date" class="border p-2 rounded"><button onclick="addExpense()" class="bg-red-600 text-white rounded p-2 font-bold">Save</button>
+</div>
+<div class="bg-white rounded-xl shadow overflow-auto"><table class="w-full text-sm"><thead class="bg-gray-100"><tr><th class="p-2 text-left">Title</th><th class="p-2">Amount</th><th class="p-2">Date</th><th class="p-2 no-print">Actions</th></tr></thead><tbody id="expTable"></tbody></table></div>
+</div>
+<div id="mod-statement" class="module hidden">
+<h1 class="text-xl font-black mb-4">SACCO Statement</h1>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+<div class="bg-green-600 text-white p-4 rounded-xl"><p class="text-xs">Total Income</p><p id="stIncome" class="text-2xl font-black">UGX 0</p></div>
+<div class="bg-red-600 text-white p-4 rounded-xl"><p class="text-xs">Total Expenses</p><p id="stExp" class="text-2xl font-black">UGX 0</p></div>
+<div class="bg-blue-900 text-white p-4 rounded-xl"><p class="text-xs">Net Profit</p><p id="stProfit" class="text-2xl font-black">UGX 0</p></div>
+</div>
+</div>
+<div id="mod-reports" class="module hidden">
+<h1 class="text-xl font-black mb-4">Reports</h1>
+<div class="bg-white p-4 rounded-xl shadow mb-4 no-print grid grid-cols-1 md:grid-cols-3 gap-2">
+<button onclick="printModule()" class="bg-green-900 text-white p-2 rounded font-bold">Print All</button>
+<button onclick="generateDefaulters()" class="bg-red-600 text-white p-2 rounded font-bold">Defaulters Report</button>
+<button onclick="shareWhatsAppReport()" class="bg-green-600 text-white p-2 rounded font-bold">WhatsApp Report</button>
+</div>
+<div id="reportsArea" class="bg-white p-4 rounded-xl shadow text-sm"></div>
+</div>
+<div id="mod-staff" class="module hidden">
+<h1 class="text-xl font-black mb-2">Staff Management - Super Admin Only</h1>
+<div id="staffPermInfo" class="p-2 rounded text-xs mb-3"></div>
+<div id="staffCreateArea" class="bg-white p-4 rounded-xl shadow mb-4 no-print grid grid-cols-1 md:grid-cols-5 gap-2">
+<input id="staffUser" placeholder="Username" class="border p-2 rounded"><input id="staffPass" placeholder="Password" class="border p-2 rounded"><select id="staffRole" class="border p-2 rounded"><option>cashier</option><option>loans_officer</option><option>manager</option><option>admin</option></select><input id="staffFullName" placeholder="Full Name" class="border p-2 rounded"><button onclick="createStaff()" class="bg-gray-800 text-white rounded p-2 font-bold">Create User</button>
+</div>
+<div class="bg-white rounded-xl shadow overflow-auto"><table class="w-full text-sm"><thead class="bg-gray-100"><tr><th class="p-2 text-left">User - Role</th><th class="p-2">Password Status</th><th class="p-2 no-print">Actions</th></tr></thead><tbody id="staffTable"></tbody></table></div>
+</div>
+<div id="mod-changepass" class="module hidden">
+<h1 class="text-xl font-black mb-4">Change Password</h1>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="bg-white p-6 rounded-xl shadow">
+<div class="bg-blue-50 p-3 rounded mb-4 text-sm"><b>Logged in as:</b> <span id="cpUser"></span> - <span id="cpRole"></span><br><span id="cpPermText" class="text-[11px]"></span></div>
+<label class="text-xs font-bold">Current Password</label><input id="cpCurrent" type="password" class="w-full border-2 p-3 rounded-lg mb-3">
+<label class="text-xs font-bold">New Password</label><input id="cpNew" type="password" class="w-full border-2 p-3 rounded-lg mb-3">
+<label class="text-xs font-bold">Confirm</label><input id="cpConfirm" type="password" class="w-full border-2 p-3 rounded-lg mb-4">
+<div id="cpError" class="hidden bg-red-100 text-red-700 p-2 rounded text-sm mb-3"></div>
+<div id="cpSuccess" class="hidden bg-green-100 text-green-700 p-2 rounded text-sm mb-3"></div>
+<button onclick="changeOwnPassword()" class="w-full bg-black text-white p-3 rounded-lg font-black">Change My Own Password Now</button>
+</div>
+<div class="bg-white p-6 rounded-xl shadow" id="adminResetSection">
+<h3 class="font-bold text-sm mb-2">🔒 Super Admin Only: Edit Username & Password</h3>
+<label class="text-xs font-bold">Select User</label><select id="resetUserSelect" class="w-full border p-2 rounded mb-2"></select>
+<label class="text-xs font-bold">Edit Username</label><input id="editNewUsername" placeholder="New username" class="w-full border p-2 rounded mb-2">
+<label class="text-xs font-bold">New Password</label><input id="resetNewPass" placeholder="New password" class="w-full border p-2 rounded mb-3">
+<button onclick="adminResetPassword()" class="w-full bg-red-600 text-white p-2 rounded font-bold">Super Admin Save Changes</button>
+<div class="mt-6 border-t pt-4">
+<label class="text-xs font-bold">Super Admin Own Password</label><input id="superAdminNewPass" type="password" placeholder="New super admin password" class="w-full border p-2 rounded mb-2">
+<button onclick="changeSuperAdminPass()" class="w-full bg-black text-white p-2 rounded font-bold">Change Super Admin Password</button>
+</div>
+</div>
+</div>
+</div>
+<div id="mod-share" class="module hidden">
+<h1 class="text-xl font-black mb-4">Share / QR</h1>
+<div class="bg-white p-6 rounded-xl shadow text-center">
+<div class="bg-gray-100 p-3 rounded font-mono text-sm break-all mb-4">https://allan-sacco-client.github.io/</div>
+<div class="flex justify-center gap-2 mb-4 no-print">
+<button onclick="copyLink()" class="bg-green-900 text-white px-4 py-2 rounded font-bold">Copy Link</button>
+<button onclick="shareWhatsApp()" class="bg-green-600 text-white px-4 py-2 rounded font-bold">Share WhatsApp</button>
+</div>
+<div id="qrcode" class="flex justify-center mt-4"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+const _0xS = "YWxsYW4xMjg="; const _0xP = "MjAyNA=="; function _dec(b){return atob(b);}
+const GLOBAL_STAFF_BASE = [
+  {u:_dec(_0xS), p:_dec(_0xP), role:'super_admin', hidden:true},
+  {u:'red1', p:'1111', role:'cashier'},
+  {u:'red2', p:'1111', role:'loans_officer'},
+  {u:'red3', p:'1111', role:'manager'},
+  {u:'red4', p:'1111', role:'admin'},
+  {u:'red5', p:'1111', role:'cashier'},
+  {u:'red6', p:'1111', role:'admin'},
+  {u:'red7', p:'1111', role:'cashier'}
+];
+let store = JSON.parse(localStorage.getItem('sacco_v1_ultra') || '{}');
+store.members = store.members || []; store.shares = store.shares || []; store.savings = store.savings || []; store.loans = store.loans || []; store.repayments = store.repayments || []; store.expenses = store.expenses || []; store.localStaff = store.localStaff || []; store.passOverrides = store.passOverrides || {};
+function save(){ localStorage.setItem('sacco_v1_ultra', JSON.stringify(store)); renderAll(); }
+function getAllStaff(){ let map={}; let base=JSON.parse(JSON.stringify(GLOBAL_STAFF_BASE)); base.forEach(b=>{ if(store.passOverrides[b.u]) b.p=store.passOverrides[b.u]; map[b.u]=b; }); store.localStaff.forEach(s=>{ if(store.passOverrides[s.u]) s.p=store.passOverrides[s.u]; map[s.u]=s; }); return Object.values(map); }
+function isSuperAdmin(){ let sess = JSON.parse(localStorage.getItem('sacco_session')||'{}'); return sess.role==='super_admin' && sess.u===_dec(_0xS); }
+function doLogin(){ let u=document.getElementById('loginUser').value.trim(); let p=document.getElementById('loginPass').value.trim(); let err=document.getElementById('loginError'); let all=getAllStaff(); let f=all.find(s=> s.u===u && s.p===p); if(!f){ err.textContent='Invalid! Contact admin.'; err.classList.remove('hidden'); return;} localStorage.setItem('sacco_session', JSON.stringify(f)); showApp(f); }
+function showApp(user){ document.getElementById('loginScreen').classList.add('hidden'); document.getElementById('appScreen').classList.remove('hidden'); document.getElementById('sideUser').textContent=user.u; document.getElementById('sideRole').textContent=user.role; document.getElementById('cpUser').textContent=user.u; document.getElementById('cpRole').textContent=user.role; let badge=document.getElementById('permBadge'); let btnStaff=document.getElementById('btnStaff'); let createArea=document.getElementById('staffCreateArea'); let adminReset=document.getElementById('adminResetSection'); if(isSuperAdmin()){ badge.innerHTML='<span class="bg-black text-yellow-300 px-2 py-0.5 rounded">🔒 SUPER ADMIN - Client Owner</span>'; btnStaff.classList.remove('hidden'); createArea.classList.remove('hidden'); adminReset.classList.remove('hidden'); } else { badge.innerHTML='<span class="bg-gray-700 text-white px-2 py-0.5 rounded">Staff - Staff list hidden</span>'; btnStaff.classList.add('hidden'); createArea.classList.add('hidden'); adminReset.classList.add('hidden'); } renderAll(); showModule('dashboard'); }
+function doLogout(){ localStorage.removeItem('sacco_session'); location.reload(); }
+function showModule(id){ if(id==='staff' && !isSuperAdmin()){ alert('⛔ ONLY SUPER ADMIN can see staff list!'); return; } document.querySelectorAll('.module').forEach(m=> m.classList.add('hidden')); document.getElementById('mod-'+id).classList.remove('hidden'); }
+function printModule(){ window.print(); }
+function changeOwnPassword(){ let cur=document.getElementById('cpCurrent').value.trim(); let nw=document.getElementById('cpNew').value.trim(); let conf=document.getElementById('cpConfirm').value.trim(); let err=document.getElementById('cpError'); let suc=document.getElementById('cpSuccess'); err.classList.add('hidden'); suc.classList.add('hidden'); if(!cur||!nw||!conf){ err.textContent='Fill all fields'; err.classList.remove('hidden'); return;} if(nw!==conf){ err.textContent='Do not match'; err.classList.remove('hidden'); return;} let sess=JSON.parse(localStorage.getItem('sacco_session')||'{}'); let all=getAllStaff(); let me=all.find(s=> s.u===sess.u); if(!me||me.p!==cur){ err.textContent='Current wrong!'; err.classList.remove('hidden'); return;} store.passOverrides[sess.u]=nw; save(); sess.p=nw; localStorage.setItem('sacco_session', JSON.stringify(sess)); suc.textContent='✅ Password changed! New: '+nw; suc.classList.remove('hidden'); }
+function adminResetPassword(){ if(!isSuperAdmin()){ alert('ONLY SUPER ADMIN!'); return;} let oldU=document.getElementById('resetUserSelect').value; let newU=document.getElementById('editNewUsername').value.trim(); let np=document.getElementById('resetNewPass').value.trim(); if(!oldU||!np){ alert('Select user and password'); return;} if(!newU) newU=oldU; if(newU!==oldU){ let local=store.localStaff.find(s=> s.u===oldU); if(local){ local.u=newU; local.p=np; } if(store.passOverrides[oldU]) delete store.passOverrides[oldU]; store.passOverrides[newU]=np; alert('Username: '+oldU+' → '+newU+' Pass: '+np); } else { store.passOverrides[oldU]=np; alert('Password for '+oldU+' changed to: '+np); } save(); }
+function changeSuperAdminPass(){ if(!isSuperAdmin()){ alert('Only super admin!'); return;} let np=document.getElementById('superAdminNewPass').value.trim(); if(!np||np.length<4){ alert('Enter valid'); return;} store.passOverrides[_dec(_0xS)]=np; save(); alert('Super admin password changed to: '+np); }
+function createStaff(){ if(!isSuperAdmin()){ alert('ONLY SUPER ADMIN!'); return;} let u=document.getElementById('staffUser').value.trim(); let p=document.getElementById('staffPass').value.trim(); let r=document.getElementById('staffRole').value; if(!u||!p){ alert('Enter username & password'); return;} store.localStaff.push({u,p,role:r}); save(); }
+function renderStaff(){ if(!isSuperAdmin()) return; let tb=document.getElementById('staffTable'); if(!tb) return; let all=getAllStaff(); tb.innerHTML = all.map(s=> `<tr class="border-b"><td class="p-2">${s.u} - ${s.role}</td><td class="p-2 text-center text-[10px]">Hidden from login</td><td class="p-2 text-center"><button onclick="document.getElementById('resetUserSelect').value='${s.u}'; document.getElementById('editNewUsername').value='${s.u}'; showModule('changepass')" class="bg-blue-500 text-white px-2 py-1 rounded text-xs">Edit</button> <button onclick="delStaff('${s.u}')" class="bg-red-500 text-white px-2 py-1 rounded text-xs">Del</button></td></tr>`).join(''); let sel=document.getElementById('resetUserSelect'); if(sel){ sel.innerHTML = all.map(s=> `<option value="${s.u}">${s.u} - ${s.role}</option>`).join(''); } }
+function addMember(){ let name=document.getElementById('memName').value.trim(); let phone=document.getElementById('memPhone').value.trim(); let nin=document.getElementById('memNIN').value.trim(); let kin=document.getElementById('memNextKin').value.trim(); if(!name) return alert('Enter name'); let memNo='MEM'+String(store.members.length+1).padStart(4,'0'); store.members.push({id:Date.now(), memNo, name, phone, nin, kin}); document.getElementById('memName').value=''; document.getElementById('memPhone').value=''; document.getElementById('memNIN').value=''; document.getElementById('memNextKin').value=''; save(); }
+function renderMembers(){ let tb=document.getElementById('memTable'); if(!tb) return; tb.innerHTML = store.members.map(m=> `<tr class="border-b"><td class="p-2">${m.memNo} - ${m.name} - ${m.phone}</td><td class="p-2 text-center">${m.nin}</td><td class="p-2 text-center">${m.kin}</td><td class="p-2 text-center no-print"><button onclick="delMember(${m.id})" class="bg-red-500 text-white px-2 py-1 rounded text-xs">Del</button></td></tr>`).join(''); document.getElementById('dashMembers').textContent=store.members.length; let selects=['shareMember','savMember','loanMember']; selects.forEach(sid=>{ let sel=document.getElementById(sid); if(sel){ sel.innerHTML = '<option value="">Select Member</option>' + store.members.map(m=> `<option value="${m.memNo}">${m.memNo} - ${m.name}</option>`).join(''); } }); }
+function delMember(id){ store.members=store.members.filter(x=> x.id!==id); save(); }
+function addShare(){ let mem=document.getElementById('shareMember').value; let qty=parseInt(document.getElementById('shareQty').value)||0; let price=parseInt(document.getElementById('sharePrice').value)||20000; if(!mem||!qty) return alert('Select member & qty'); store.shares.push({id:Date.now(), mem, qty, price, total:qty*price}); document.getElementById('shareQty').value=''; save(); }
+function renderShares(){ let tb=document.getElementById('shareTable'); if(!tb) return; tb.innerHTML = store.shares.map(s=> `<tr class="border-b"><td class="p-2">${s.mem}</td><td class="p-2 text-center">${s.qty}</td><td class="p-2 text-center">UGX ${s.total.toLocaleString()}</td><td class="p-2 text-center no-print"><button onclick="delShare(${s.id})" class="bg-red-500 text-white px-2 py-1 rounded text-xs">Del</button></td></tr>`).join(''); }
+function delShare(id){ store.shares=store.shares.filter(x=> x.id!==id); save(); }
+function addSaving(){ let mem=document.getElementById('savMember').value; let type=document.getElementById('savType').value; let amount=parseInt(document.getElementById('savAmount').value)||0; let phone=document.getElementById('savPhone').value.trim(); if(!mem||!amount) return alert('Select member & amount'); store.savings.push({id:Date.now(), mem, type, amount, phone}); document.getElementById('savAmount').value=''; document.getElementById('savPhone').value=''; save(); }
+function renderSavings(){ let tb=document.getElementById('savTable'); if(!tb) return; tb.innerHTML = store.savings.map(s=> `<tr class="border-b"><td class="p-2">${s.mem}</td><td class="p-2 text-center">${s.type}</td><td class="p-2 text-center">UGX ${s.amount.toLocaleString()}</td><td class="p-2 text-center no-print"><button onclick="delSav(${s.id})" class="bg-red-500 text-white px-2 py-1 rounded text-xs">Del</button></td></tr>`).join(''); let total=store.savings.reduce((a,b)=> a+b.amount,0); document.getElementById('dashSavings').textContent='UGX '+total.toLocaleString(); calcProfit(); }
+function delSav(id){ store.savings=store.savings.filter(x=> x.id!==id); save(); }
+function addLoan(){ let mem=document.getElementById('loanMember').value; let type=document.getElementById('loanType').value; let amount=parseInt(document.getElementById('loanAmount').value)||0; let rate=parseInt(document.getElementById('loanRate').value)||10; let duration=parseInt(document.getElementById('loanDuration').value)||1; let guarantor=document.getElementById('loanGuarantor').value.trim(); let collateral=document.getElementById('loanCollateral').value.trim(); let phone=document.getElementById('loanPhone').value.trim(); if(!mem||!amount) return alert('Select member & amount'); let interest = amount*rate/100*duration; let total = amount+interest; let loanNo='LOAN'+String(store.loans.length+1).padStart(4,'0'); store.loans.push({id:Date.now(), loanNo, mem, type, amount, rate, duration, interest, total, guarantor, collateral, phone, status:'Approved', balance:total}); document.getElementById('loanAmount').value=''; save(); }
+function renderLoans(){ let tb=document.getElementById('loanTable'); if(!tb) return; tb.innerHTML = store.loans.map(l=> `<tr class="border-b"><td class="p-2">${l.mem} - ${l.loanNo}</td><td class="p-2 text-center">${l.type}</td><td class="p-2 text-center">UGX ${l.amount.toLocaleString()} + ${l.interest.toLocaleString()} = ${l.total.toLocaleString()}</td><td class="p-2 text-center text-[10px]">${l.guarantor}</td><td class="p-2 text-center">${l.status}<br>Bal: ${l.balance.toLocaleString()}</td><td class="p-2 text-center no-print"><button onclick="document.getElementById('repayLoan').value='${l.loanNo}'; showModule('repay')" class="bg-green-500 text-white px-2 py-1 rounded text-xs">Pay</button><button onclick="delLoan(${l.id})" class="bg-red-500 text-white px-2 py-1 rounded text-xs">Del</button></td></tr>`).join(''); let total=store.loans.reduce((a,b)=> a+b.total,0); document.getElementById('dashLoans').textContent='UGX '+total.toLocaleString(); let sel=document.getElementById('repayLoan'); if(sel){ sel.innerHTML = '<option value="">Select Loan</option>' + store.loans.map(l=> `<option value="${l.loanNo}">${l.loanNo} - ${l.mem} - Bal ${l.balance.toLocaleString()}</option>`).join(''); } calcProfit(); }
+function delLoan(id){ store.loans=store.loans.filter(x=> x.id!==id); save(); }
+function addRepay(){ let loanNo=document.getElementById('repayLoan').value; let amount=parseInt(document.getElementById('repayAmount').value)||0; if(!loanNo||!amount) return alert('Select loan & amount'); let loan=store.loans.find(l=> l.loanNo===loanNo); if(!loan) return alert('Loan not found'); loan.balance = Math.max(0, loan.balance-amount); store.repayments.push({id:Date.now(), loanNo, mem:loan.mem, amount, date:new Date().toLocaleDateString()}); document.getElementById('repayAmount').value=''; save(); }
+function renderRepay(){ let tb=document.getElementById('repayTable'); if(!tb) return; tb.innerHTML = store.repayments.map(r=> `<tr class="border-b"><td class="p-2">${r.loanNo} - ${r.mem}</td><td class="p-2 text-center">UGX ${r.amount.toLocaleString()}</td><td class="p-2 text-center">${r.date}</td><td class="p-2 text-center no-print"><button onclick="delRepay(${r.id})" class="bg-red-500 text-white px-2 py-1 rounded text-xs">Del</button></td></tr>`).join(''); }
+function delRepay(id){ store.repayments=store.repayments.filter(x=> x.id!==id); save(); }
+function addExpense(){ let title=document.getElementById('expTitle').value.trim(); let amount=parseInt(document.getElementById('expAmount').value)||0; let date=document.getElementById('expDate').value||new Date().toLocaleDateString(); if(!title||!amount) return alert('Enter title & amount'); store.expenses.push({id:Date.now(), title, amount, date}); document.getElementById('expTitle').value=''; document.getElementById('expAmount').value=''; save(); }
+function renderExpenses(){ let tb=document.getElementById('expTable'); if(!tb) return; tb.innerHTML = store.expenses.map(e=> `<tr class="border-b"><td class="p-2">${e.title}</td><td class="p-2 text-center">UGX ${e.amount.toLocaleString()}</td><td class="p-2 text-center">${e.date}</td><td class="p-2 text-center no-print"><button onclick="delExp(${e.id})" class="bg-red-500 text-white px-2 py-1 rounded text-xs">Del</button></td></tr>`).join(''); calcProfit(); }
+function delExp(id){ store.expenses=store.expenses.filter(x=> x.id!==id); save(); }
+function calcProfit(){ let inc = store.savings.reduce((a,b)=> a+b.amount,0) + store.shares.reduce((a,b)=> a+b.total,0) + store.loans.reduce((a,b)=> a+b.interest,0) + store.repayments.reduce((a,b)=> a+b.amount,0); let exp = store.expenses.reduce((a,b)=> a+b.amount,0); document.getElementById('dashProfit').textContent='UGX '+(inc-exp).toLocaleString(); document.getElementById('stIncome').textContent='UGX '+inc.toLocaleString(); document.getElementById('stExp').textContent='UGX '+exp.toLocaleString(); document.getElementById('stProfit').textContent='UGX '+(inc-exp).toLocaleString(); }
+function generateDefaulters(){ let def = store.loans.filter(l=> l.balance>0); let area=document.getElementById('reportsArea'); area.innerHTML = `<h3 class="font-bold">Defaulters - Balance > 0 (${def.length})</h3><table class="w-full text-xs mt-2"><tr class="bg-gray-100"><th>Loan</th><th>Member</th><th>Balance</th></tr>${def.map(d=> `<tr class="border-b"><td>${d.loanNo}</td><td>${d.mem}</td><td>UGX ${d.balance.toLocaleString()}</td></tr>`).join('')}</table>`; }
+function shareWhatsAppReport(){ let inc = store.savings.reduce((a,b)=> a+b.amount,0) + store.shares.reduce((a,b)=> a+b.total,0) + store.loans.reduce((a,b)=> a+b.interest,0); let exp = store.expenses.reduce((a,b)=> a+b.amount,0); let msg=`*SACCO Daily Report*%0AMembers: ${store.members.length}%0ASavings: UGX ${store.savings.reduce((a,b)=> a+b.amount,0).toLocaleString()}%0ALoans: ${store.loans.length}%0AIncome: UGX ${inc.toLocaleString()}%0AExpenses: UGX ${exp.toLocaleString()}%0AProfit: UGX ${(inc-exp).toLocaleString()}`; window.open(`https://wa.me/?text=${msg}`, '_blank'); }
+function copyLink(){ navigator.clipboard.writeText('https://allan-sacco-client.github.io/'); alert('Link copied!'); }
+function shareWhatsApp(){ let text=`*ALLAN SACCO SYSTEM V1.0*%0AFor Client%0ALink: https://allan-sacco-client.github.io/`; window.open(`https://wa.me/?text=${text}`, '_blank'); }
+function delStaff(u){ if(!isSuperAdmin()){ alert('ONLY SUPER ADMIN!'); return;} if(u===_dec(_0xS)){ alert('Cannot delete super admin!'); return;} if(confirm('Delete '+u+'?')){ store.localStaff=store.localStaff.filter(x=> x.u!==u); delete store.passOverrides[u]; save(); } }
+function renderAll(){ renderMembers(); renderShares(); renderSavings(); renderLoans(); renderRepay(); renderExpenses(); renderStaff(); }
+window.onload = ()=>{ let sess=localStorage.getItem('sacco_session'); if(sess){ try{ let u=JSON.parse(sess); let all=getAllStaff(); let f=all.find(x=> x.u===u.u && x.p===u.p); if(f) showApp(f); }catch(e){} } renderAll(); };
+</script>
+</body>
+</html>
