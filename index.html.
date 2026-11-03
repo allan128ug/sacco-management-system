@@ -3,135 +3,260 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ALLAN SACCO V3.0 SECURE - Name+Password</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<title>Allan SACCO - Final</title>
+<style>
+*{box-sizing:border-box;font-family:Arial,sans-serif}
+body{margin:0;background:#f1f5f9}
+header{background:#0f172a;color:#fff;padding:15px 20px;display:flex;justify-content:space-between;align-items:center}
+header b{font-size:20px}
+nav{display:flex;gap:8px;background:#fff;padding:10px;flex-wrap:wrap;box-shadow:0 2px 5px #0001}
+nav button{padding:10px 14px;border:none;background:#e2e8f0;border-radius:8px;cursor:pointer;font-weight:bold}
+nav button.active{background:#0f172a;color:#fff}
+.card{background:#fff;margin:15px;padding:18px;border-radius:12px;box-shadow:0 2px 8px #0001}
+input,select{width:100%;padding:11px;margin:6px 0;border:1px solid #cbd5e1;border-radius:8px}
+.btn{background:#16a34a;color:#fff;border:none;padding:11px 16px;border-radius:8px;cursor:pointer;font-weight:bold}
+.btn-blue{background:#2563eb}.btn-red{background:#dc2626}.btn-dark{background:#0f172a}
+table{width:100%;border-collapse:collapse;margin-top:10px}
+th,td{padding:10px;border-bottom:1px solid #e2e8f0;text-align:left;font-size:14px}
+.hidden{display:none}
+.badge{padding:4px 8px;border-radius:20px;font-size:12px;color:#fff}
+.green{background:#16a34a}.orange{background:#f59e0b}.blue{background:#2563eb}
+#loginBox{max-width:400px;margin:80px auto;background:#fff;padding:25px;border-radius:14px;box-shadow:0 5px 20px #0002}
+</style>
 </head>
-<body class="bg-gray-100">
-<div id="loginScreen" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-black to-green-900 p-4">
-<div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
-<h1 class="text-2xl font-black text-center">ALLAN SACCO V3.0 SECURE</h1>
-<p class="text-center text-sm font-bold text-red-600">🔒 Super Admin Grants Access</p>
-<p class="text-center text-[11px] font-bold text-green-700">Project: allan-sacco | Name+Password Login</p>
-<div id="fbStatus" class="text-[11px] p-2 rounded mb-3 bg-blue-50 text-center">Connecting Secure...</div>
-<div id="authError" class="hidden bg-red-100 text-red-700 p-2 rounded text-sm mb-3"></div>
-<div id="authSuccess" class="hidden bg-green-100 text-green-700 p-2 rounded text-sm mb-3"></div>
-<label class="text-xs font-bold">Login as:</label>
-<select id="loginType" class="w-full border-2 p-3 rounded-lg mb-3" onchange="toggleLoginType()">
-<option value="staff">Staff - Name + Password (Given by Super Admin)</option>
-<option value="super">Super Admin - Email + Password</option>
-</select>
-<div id="staffLogin">
-<label class="text-xs font-bold">Actual Name</label>
-<input id="staffName" class="w-full border-2 p-3 rounded-lg mb-3" placeholder="Enter your actual name">
-<label class="text-xs font-bold">Password</label>
-<input id="staffPassword" type="password" class="w-full border-2 p-3 rounded-lg mb-4" placeholder="Password from Super Admin">
-<button onclick="doStaffLogin()" class="w-full bg-black text-white p-3 rounded-lg font-black">LOGIN AS STAFF</button>
+<body>
+
+<header><b>🏦 ALLAN SACCO</b><span id="userInfo"></span><button class="btn btn-red hidden" id="logoutBtn" onclick="logout()">Logout</button></header>
+
+<!-- LOGIN -->
+<div id="loginBox">
+  <h2>Login</h2>
+  <p>Use your name as registered, e.g. <b>allan amon</b></p>
+  <input id="loginName" placeholder="Enter your full name - e.g. allan amon">
+  <input id="loginPass" type="password" placeholder="Password">
+  <button class="btn btn-dark" style="width:100%" onclick="doLogin()">Login</button>
+  <p id="loginMsg" style="color:red"></p>
 </div>
-<div id="superLogin" class="hidden">
-<label class="text-xs font-bold">Super Admin Email</label>
-<input id="superEmail" type="email" class="w-full border-2 p-3 rounded-lg mb-3" placeholder="allan128ug@gmail.com">
-<label class="text-xs font-bold">Password</label>
-<input id="superPass" type="password" class="w-full border-2 p-3 rounded-lg mb-4">
-<button onclick="doSuperLogin()" class="w-full bg-red-700 text-white p-3 rounded-lg font-black">LOGIN SUPER ADMIN</button>
+
+<!-- APP -->
+<div id="app" class="hidden">
+<nav>
+  <button onclick="show('dashboard')" id="n-dashboard" class="active">📊 Dashboard</button>
+  <button onclick="show('members')" id="n-members">👥 Members</button>
+  <button onclick="show('savings')" id="n-savings">💰 Savings</button>
+  <button onclick="show('loans')" id="n-loans">🏦 Loans</button>
+  <button onclick="show('logs')" id="n-logs">📜 Log History</button>
+</nav>
+
+<!-- DASHBOARD -->
+<div id="page-dashboard" class="card">
+  <h2>Dashboard</h2>
+  <p>Welcome <b id="welcomeName"></b> | Role: <b id="welcomeRole"></b></p>
+  <p>Total Members: <b id="statMembers">0</b> | Total Savings: <b id="statSavings">0 UGX</b> | Total Loans: <b id="statLoans">0 UGX</b> | Logs: <b id="statLogs">0</b></p>
 </div>
+
+<!-- MEMBERS -->
+<div id="page-members" class="card hidden">
+  <h2>Members</h2>
+  <input id="mName" placeholder="Member Full Name">
+  <input id="mPhone" placeholder="Phone e.g. 0770...">
+  <button class="btn" onclick="addMember()">+ Add Member</button>
+  <table><thead><tr><th>Name</th><th>Phone</th><th>Date</th><th>Action</th></tr></thead><tbody id="membersList"></tbody></table>
+</div>
+
+<!-- SAVINGS -->
+<div id="page-savings" class="card hidden">
+  <h2>Savings / Deposit</h2>
+  <select id="sMember"></select>
+  <input id="sAmount" type="number" placeholder="Amount UGX">
+  <button class="btn" onclick="addSaving()">Deposit Saving</button>
+  <table><thead><tr><th>Member</th><th>Amount</th><th>Date</th><th>By</th></tr></thead><tbody id="savingsList"></tbody></table>
+</div>
+
+<!-- LOANS -->
+<div id="page-loans" class="card hidden">
+  <h2>Loans</h2>
+  <select id="lMember"></select>
+  <input id="lAmount" type="number" placeholder="Loan Amount UGX">
+  <button class="btn btn-blue" onclick="addLoan()">Request Loan</button>
+  <table><thead><tr><th>Member</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead><tbody id="loansList"></tbody></table>
+</div>
+
+<!-- LOGS -->
+<div id="page-logs" class="card hidden">
+  <h2>📜 Log History - All Modules</h2>
+  <div style="display:flex;gap:8px">
+    <select id="logFilter" onchange="renderLogs()"><option value="ALL">All Modules</option><option value="AUTH">AUTH</option><option value="MEMBERS">MEMBERS</option><option value="SAVINGS">SAVINGS</option><option value="LOANS">LOANS</option><option value="SYSTEM">SYSTEM</option></select>
+    <input id="logSearch" placeholder="Search logs..." oninput="renderLogs()">
+  </div>
+  <button class="btn btn-red" onclick="clearLogs()" style="margin-top:8px">Clear All Logs (Admin)</button>
+  <table><thead><tr><th>Date</th><th>Module</th><th>Action</th><th>User</th><th>Details</th></tr></thead><tbody id="logsList"></tbody></table>
 </div>
 </div>
 
-<div id="appScreen" class="hidden min-h-screen flex">
-<div class="w-64 bg-black text-white flex flex-col">
-<div class="p-4 border-b"><h2 class="font-black">V3.0 SECURE</h2><p class="text-xs text-yellow-300" id="sideName"></p><p class="text-xs text-gray-400" id="sideRole"></p></div>
-<div class="flex-1 overflow-y-auto p-2 space-y-1 text-sm">
-<button onclick="showModule('dashboard')" class="w-full text-left p-2.5 rounded hover:bg-gray-800">Dashboard</button>
-<button onclick="showModule('members')" class="w-full text-left p-2.5 rounded hover:bg-gray-800">Members</button>
-<button onclick="showModule('shares')" class="w-full text-left p-2.5 rounded hover:bg-gray-800">Shares</button>
-<button onclick="showModule('savings')" class="w-full text-left p-2.5 rounded hover:bg-gray-800">Savings</button>
-<button onclick="showModule('loans')" class="w-full text-left p-2.5 rounded hover:bg-gray-800">Loans</button>
-<button onclick="showModule('repay')" class="w-full text-left p-2.5 rounded hover:bg-gray-800">Repayments</button>
-<button onclick="showModule('expenses')" class="w-full text-left p-2.5 rounded hover:bg-gray-800">Expenses</button>
-<button onclick="showModule('statement')" class="w-full text-left p-2.5 rounded bg-yellow-600">Statement</button>
-<button onclick="showModule('reports')" class="w-full text-left p-2.5 rounded hover:bg-gray-800">Reports</button>
-<button id="btnUsers" onclick="showModule('users')" class="w-full text-left p-2.5 rounded bg-red-900 hidden">👑 Users - Grant Access</button>
-<button id="btnLogs" onclick="showModule('logs')" class="w-full text-left p-2.5 rounded bg-blue-900 hidden">📜 Log History</button>
-<button onclick="showModule('changepass')" class="w-full text-left p-2.5 rounded bg-white text-black font-bold">🔑 Change My Password</button>
-</div>
-<div class="p-3"><button onclick="doLogout()" class="w-full bg-red-600 p-2.5 rounded font-bold text-sm">Logout</button></div>
-</div>
-<div class="flex-1 overflow-y-auto p-6">
-<div id="mod-dashboard" class="module"><h1 class="text-2xl font-black mb-2">Dashboard V3.0 SECURE</h1><div id="dashInfo" class="p-3 rounded text-sm mb-4 bg-black text-yellow-300"></div><div class="grid grid-cols-2 md:grid-cols-4 gap-4"><div class="bg-white p-4 rounded-xl shadow"><p class="text-xs">Members</p><p id="dashMembers" class="text-xl font-black">0</p></div><div class="bg-green-600 text-white p-4 rounded-xl shadow"><p class="text-xs">Savings</p><p id="dashSavings" class="text-xl font-black">UGX 0</p></div><div class="bg-yellow-600 text-white p-4 rounded-xl shadow"><p class="text-xs">Loans</p><p id="dashLoans" class="text-xl font-black">UGX 0</p></div><div class="bg-blue-900 text-white p-4 rounded-xl shadow"><p class="text-xs">Profit</p><p id="dashProfit" class="text-xl font-black">UGX 0</p></div></div></div>
-<div id="mod-users" class="module hidden"><h1 class="text-xl font-black mb-2">👑 User Management - Super Admin Only</h1><div class="bg-white p-4 rounded-xl shadow mb-4"><h3 class="font-bold text-sm mb-2">Create New User - Give Actual Name + Password</h3><div class="grid grid-cols-1 md:grid-cols-5 gap-2"><input id="newUserName" placeholder="Actual Name e.g., John Doe" class="border p-2 rounded"><input id="newUserEmail" placeholder="Email (optional)" class="border p-2 rounded"><input id="newUserPass" placeholder="Password for user" class="border p-2 rounded"><select id="newUserRole" class="border p-2 rounded"><option>cashier</option><option>loans_officer</option><option>manager</option><option>admin</option><option>super_admin</option></select><button onclick="createUser()" class="bg-black text-white p-2 rounded font-bold">Create & Grant Access</button></div></div><div class="bg-white rounded-xl shadow overflow-auto"><table class="w-full text-sm"><thead class="bg-gray-100"><tr><th class="p-2">Name - Email - Role - Status</th><th class="p-2">Actions</th></tr></thead><tbody id="usersTable"></tbody></table></div></div>
-<div id="mod-logs" class="module hidden"><h1 class="text-xl font-black mb-2">📜 Log History - Super Admin Monitoring</h1><div class="bg-white p-4 rounded-xl shadow mb-4 grid grid-cols-1 md:grid-cols-3 gap-2"><button onclick="loadLogs()" class="bg-blue-900 text-white p-2 rounded font-bold">Refresh Logs</button><button onclick="clearLogs()" class="bg-red-600 text-white p-2 rounded font-bold">Clear Logs</button><button onclick="exportLogs()" class="bg-green-600 text-white p-2 rounded font-bold">Export CSV</button></div><div class="bg-white rounded-xl shadow overflow-auto max-h-[600px]"><table class="w-full text-[11px]"><thead class="bg-gray-100 sticky top-0"><tr><th class="p-2 text-left">Time</th><th class="p-2">Name/Email</th><th class="p-2">Action</th><th class="p-2">Details</th></tr></thead><tbody id="logsTable"></tbody></table></div></div>
-<div id="mod-changepass" class="module hidden"><h1 class="text-xl font-black mb-4">🔑 Change My Password - Any User Can Change Anytime</h1><div class="bg-white p-6 rounded-xl shadow max-w-md"><div class="bg-blue-50 p-3 rounded mb-4 text-sm"><b>Logged as:</b> <span id="cpName"></span> | Role: <span id="cpRole"></span></div><input id="cpCurrent" type="password" placeholder="Current Password" class="w-full border-2 p-3 rounded-lg mb-3"><input id="cpNew" type="password" placeholder="New Password" class="w-full border-2 p-3 rounded-lg mb-3"><input id="cpConfirm" type="password" placeholder="Confirm New Password" class="w-full border-2 p-3 rounded-lg mb-4"><div id="cpError" class="hidden bg-red-100 text-red-700 p-2 rounded text-sm mb-3"></div><div id="cpSuccess" class="hidden bg-green-100 text-green-700 p-2 rounded text-sm mb-3"></div><button onclick="changeOwnPassword()" class="w-full bg-black text-white p-3 rounded-lg font-black">Change Password Now</button></div></div>
-<div id="mod-members" class="module hidden"><h1 class="text-xl font-black mb-4">Members</h1><div class="bg-white p-4 rounded-xl shadow mb-4 grid grid-cols-1 md:grid-cols-5 gap-2"><input id="memName" placeholder="Full Name" class="border p-2 rounded"><input id="memPhone" placeholder="Phone" class="border p-2 rounded"><input id="memNIN" placeholder="NIN" class="border p-2 rounded"><input id="memNextKin" placeholder="Next of Kin" class="border p-2 rounded"><button onclick="addMember()" class="bg-green-900 text-white rounded p-2 font-bold">Save + Log</button></div><div class="bg-white rounded-xl shadow overflow-auto"><table class="w-full text-sm"><thead class="bg-gray-100"><tr><th class="p-2 text-left">Member</th><th class="p-2">NIN</th><th class="p-2">Actions</th></tr></thead><tbody id="memTable"></tbody></table></div></div>
-<div id="mod-shares" class="module hidden"><h1 class="text-xl font-black mb-4">Shares</h1><div class="bg-white p-4 rounded-xl shadow mb-4 grid grid-cols-1 md:grid-cols-4 gap-2"><select id="shareMember" class="border p-2 rounded"></select><input id="shareQty" type="number" placeholder="Qty" class="border p-2 rounded"><input id="sharePrice" type="number" value="20000" class="border p-2 rounded"><button onclick="addShare()" class="bg-yellow-600 text-white rounded p-2 font-bold">Buy</button></div><div class="bg-white rounded-xl shadow overflow-auto"><table class="w-full text-sm"><thead class="bg-gray-100"><tr><th class="p-2">Member</th><th class="p-2">Shares</th><th class="p-2">Total</th><th class="p-2">Actions</th></tr></thead><tbody id="shareTable"></tbody></table></div></div>
-<div id="mod-savings" class="module hidden"><h1 class="text-xl font-black mb-4">Savings</h1><div class="bg-white p-4 rounded-xl shadow mb-4 grid grid-cols-1 md:grid-cols-4 gap-2"><select id="savMember" class="border p-2 rounded"></select><select id="savType" class="border p-2 rounded"><option>Compulsory</option><option>Voluntary</option><option>Fixed Deposit</option></select><input id="savAmount" type="number" placeholder="Amount" class="border p-2 rounded"><button onclick="addSaving()" class="bg-green-600 text-white rounded p-2 font-bold">Save</button></div><div class="bg-white rounded-xl shadow overflow-auto"><table class="w-full text-sm"><thead class="bg-gray-100"><tr><th class="p-2">Member</th><th class="p-2">Type</th><th class="p-2">Amount</th><th class="p-2">Actions</th></tr></thead><tbody id="savTable"></tbody></table></div></div>
-<div id="mod-loans" class="module hidden"><h1 class="text-xl font-black mb-4">Loans</h1><div class="bg-white p-4 rounded-xl shadow mb-4 grid grid-cols-1 md:grid-cols-5 gap-2"><select id="loanMember" class="border p-2 rounded"></select><select id="loanType" class="border p-2 rounded"><option>Emergency</option><option>Business</option><option>School Fees</option><option>Agriculture</option><option>Boda Loan</option><option>Salary Loan</option></select><input id="loanAmount" type="number" placeholder="Amount" class="border p-2 rounded"><input id="loanRate" type="number" value="10" class="border p-2 rounded"><input id="loanDuration" type="number" placeholder="Months" class="border p-2 rounded"></div><div class="bg-white p-4 rounded-xl shadow mb-4 grid grid-cols-1 md:grid-cols-3 gap-2"><input id="loanGuarantor" placeholder="Guarantors" class="border p-2 rounded"><input id="loanCollateral" placeholder="Collateral" class="border p-2 rounded"><button onclick="addLoan()" class="bg-yellow-600 text-white rounded p-2 font-bold">Apply</button></div><div class="bg-white rounded-xl shadow overflow-auto"><table class="w-full text-sm"><thead class="bg-gray-100"><tr><th class="p-2">Loan-Member</th><th class="p-2">Type</th><th class="p-2">Amount</th><th class="p-2">Actions</th></tr></thead><tbody id="loanTable"></tbody></table></div></div>
-<div id="mod-repay" class="module hidden"><h1 class="text-xl font-black mb-4">Repayments</h1><div class="bg-white p-4 rounded-xl shadow mb-4 grid grid-cols-1 md:grid-cols-3 gap-2"><select id="repayLoan" class="border p-2 rounded"></select><input id="repayAmount" type="number" placeholder="Amount" class="border p-2 rounded"><button onclick="addRepay()" class="bg-green-600 text-white rounded p-2 font-bold">Pay</button></div><div class="bg-white rounded-xl shadow overflow-auto"><table class="w-full text-sm"><thead class="bg-gray-100"><tr><th class="p-2">Loan-Member</th><th class="p-2">Paid</th><th class="p-2">Date</th><th class="p-2">Actions</th></tr></thead><tbody id="repayTable"></tbody></table></div></div>
-<div id="mod-expenses" class="module hidden"><h1 class="text-xl font-black mb-4">Expenses</h1><div class="bg-white p-4 rounded-xl shadow mb-4 grid grid-cols-1 md:grid-cols-3 gap-2"><input id="expTitle" placeholder="Title" class="border p-2 rounded"><input id="expAmount" type="number" placeholder="Amount" class="border p-2 rounded"><button onclick="addExpense()" class="bg-red-600 text-white rounded p-2 font-bold">Save</button></div><div class="bg-white rounded-xl shadow overflow-auto"><table class="w-full text-sm"><thead class="bg-gray-100"><tr><th class="p-2">Title</th><th class="p-2">Amount</th><th class="p-2">Date</th><th class="p-2">Actions</th></tr></thead><tbody id="expTable"></tbody></table></div></div>
-<div id="mod-statement" class="module hidden"><h1 class="text-xl font-black mb-4">Statement</h1><div class="grid grid-cols-1 md:grid-cols-3 gap-4"><div class="bg-green-600 text-white p-4 rounded-xl"><p class="text-xs">Income</p><p id="stIncome" class="text-2xl font-black">UGX 0</p></div><div class="bg-red-600 text-white p-4 rounded-xl"><p class="text-xs">Expenses</p><p id="stExp" class="text-2xl font-black">UGX 0</p></div><div class="bg-blue-900 text-white p-4 rounded-xl"><p class="text-xs">Profit</p><p id="stProfit" class="text-2xl font-black">UGX 0</p></div></div></div>
-<div id="mod-reports" class="module hidden"><h1 class="text-xl font-black mb-4">Reports</h1><div id="reportsArea" class="bg-white p-4 rounded-xl shadow text-sm"></div></div>
-<div id="mod-share" class="module hidden"><h1 class="text-xl font-black mb-4">Share</h1><div class="bg-white p-6 rounded-xl shadow text-center"><div class="bg-gray-100 p-3 rounded font-mono text-sm break-all mb-4">https://allan128ug.github.io/sacco-management-system/</div></div></div>
-</div>
-</div>
-</div>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 <script>
 const firebaseConfig = {
-  apiKey: "AIzaSyC1ThlpMYpb5D3A5Kt0v9P-Ou_nQgHESKs",
+  apiKey: "YOUR_API_KEY",
   authDomain: "allan-sacco.firebaseapp.com",
   databaseURL: "https://allan-sacco-default-rtdb.firebaseio.com",
   projectId: "allan-sacco",
-  storageBucket: "allan-sacco.firebasestorage.app",
-  messagingSenderId: "953104778679",
-  appId: "1:953104778679:web:580078814f13c4c61e9432"
+  storageBucket: "allan-sacco.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
 };
-const SUPER_ADMIN_EMAILS = ["allan128ug@gmail.com"];
-let db=null,auth=null,currentUserData=null,store={members:[], shares:[], savings:[], loans:[], repayments:[], expenses:[], users:{}};
-function initFirebase(){ try{ if(!firebase.apps.length) firebase.initializeApp(firebaseConfig); db=firebase.database(); auth=firebase.auth(); document.getElementById('fbStatus').innerHTML="🔒 V3.0 Secure Connected - allan-sacco"; document.getElementById('fbStatus').className="text-[11px] p-2 rounded mb-3 bg-green-100 text-green-700 text-center"; auth.onAuthStateChanged(user=>{ if(user) checkSuperAdmin(user); }); loadUsersForLogin(); }catch(e){} }
-function toggleLoginType(){ let t=document.getElementById('loginType').value; document.getElementById('staffLogin').classList.toggle('hidden', t!=='staff'); document.getElementById('superLogin').classList.toggle('hidden', t!=='super'); }
-function loadUsersForLogin(){ db.ref('users').once('value', snap=>{ store.users=snap.val()||{}; }); }
-async function doSuperLogin(){ let email=document.getElementById('superEmail').value.trim(); let pass=document.getElementById('superPass').value.trim(); let err=document.getElementById('authError'); err.classList.add('hidden'); try{ await auth.signInWithEmailAndPassword(email,pass); logAction('SUPER_LOGIN','Super admin login: '+email); }catch(e){ err.textContent='Login failed: '+e.message; err.classList.remove('hidden'); } }
-async function checkSuperAdmin(user){ try{ let snap=await db.ref('users/'+user.uid).once('value'); let data=snap.val(); if(!data){ let isSuper=SUPER_ADMIN_EMAILS.includes(user.email.toLowerCase()); if(!isSuper){ document.getElementById('authError').textContent='Not Super Admin'; document.getElementById('authError').classList.remove('hidden'); auth.signOut(); return; } data={name:user.email.split('@')[0], actualName:user.email.split('@')[0], email:user.email.toLowerCase(), password:'', role:'super_admin', approved:true, createdAt:Date.now(), uid:user.uid}; await db.ref('users/'+user.uid).set(data); } currentUserData=data; showApp(data); startListeners(); }catch(e){} }
-async function doStaffLogin(){ let name=document.getElementById('staffName').value.trim(); let pass=document.getElementById('staffPassword').value.trim(); let err=document.getElementById('authError'); err.classList.add('hidden'); try{ let snap=await db.ref('users').once('value'); let users=snap.val()||{}; let found=null,foundUid=null; Object.keys(users).forEach(uid=>{ let u=users[uid]; if((u.actualName&&u.actualName.toLowerCase()===name.toLowerCase()&&u.password===pass)||(u.name&&u.name.toLowerCase()===name.toLowerCase()&&u.password===pass)){ found=u; foundUid=uid; } }); if(!found){ err.textContent='Invalid name or password! Contact Super Admin.'; err.classList.remove('hidden'); return; } if(!found.approved){ err.textContent='Account not approved yet.'; err.classList.remove('hidden'); return; } found.uid=foundUid; currentUserData=found; localStorage.setItem('sacco_staff_session', JSON.stringify(found)); showApp(found); startListeners(); logAction('STAFF_LOGIN','Staff login: '+found.actualName); }catch(e){ err.textContent='Error: '+e.message; err.classList.remove('hidden'); } }
-function showApp(userData){ document.getElementById('loginScreen').classList.add('hidden'); document.getElementById('appScreen').classList.remove('hidden'); document.getElementById('sideName').textContent=userData.actualName||userData.name; document.getElementById('sideRole').textContent=userData.role; document.getElementById('cpName').textContent=userData.actualName||userData.name; document.getElementById('cpRole').textContent=userData.role; document.getElementById('dashInfo').innerHTML = userData.role==='super_admin' ? '👑 SUPER ADMIN: Grant access with Actual Name + Password. Users can change password anytime.' : '🔒 Staff: '+userData.actualName+' - Role: '+userData.role; let btnUsers=document.getElementById('btnUsers'),btnLogs=document.getElementById('btnLogs'); if(userData.role==='super_admin'){ btnUsers.classList.remove('hidden'); btnLogs.classList.remove('hidden'); } else { btnUsers.classList.add('hidden'); btnLogs.classList.add('hidden'); } showModule('dashboard'); }
-function doLogout(){ logAction('LOGOUT','Logout: '+(currentUserData?currentUserData.actualName:'unknown')); if(auth.currentUser) auth.signOut(); localStorage.removeItem('sacco_staff_session'); location.reload(); }
-function showModule(id){ if((id==='users'||id==='logs')&&currentUserData.role!=='super_admin'){ alert('ONLY SUPER ADMIN!'); return; } document.querySelectorAll('.module').forEach(m=> m.classList.add('hidden')); document.getElementById('mod-'+id).classList.remove('hidden'); if(id==='logs') loadLogs(); }
-function logAction(action,details){ try{ let log={timestamp:Date.now(), timeStr:new Date().toLocaleString(), uid: currentUserData?currentUserData.uid:'unknown', name: currentUserData?currentUserData.actualName:'unknown', email: currentUserData?currentUserData.email:'', action:action, details:details}; db.ref('logs').push(log); }catch(e){} }
-function startListeners(){ ['members','shares','savings','loans','repayments','expenses'].forEach(c=>{ db.ref(c).on('value', snap=>{ let val=snap.val(),arr=[]; if(val) Object.keys(val).forEach(k=>{ arr.push({id:k, ...val[k]}); }); store[c]=arr; renderAll(); }); }); db.ref('users').on('value', snap=>{ store.users=snap.val()||{}; renderUsers(); }); }
-function fbAdd(colName,data){ let key=db.ref().child(colName).push().key; db.ref(colName+'/'+key).set({...data, createdBy: currentUserData.actualName||currentUserData.name, createdByUid: currentUserData.uid}); logAction('CREATE_'+colName.toUpperCase(), 'Created '+colName+': '+JSON.stringify(data).substring(0,150)); }
-function fbDelete(colName,docId){ db.ref(colName+'/'+docId).remove(); logAction('DELETE_'+colName.toUpperCase(), 'Deleted '+colName+' ID: '+docId); }
-function addMember(){ let name=document.getElementById('memName').value.trim(),phone=document.getElementById('memPhone').value.trim(),nin=document.getElementById('memNIN').value.trim(),kin=document.getElementById('memNextKin').value.trim(); if(!name) return alert('Enter name'); let memNo='MEM'+String((store.members.length||0)+1).padStart(4,'0'); fbAdd('members',{memNo,name,phone,nin,kin}); document.getElementById('memName').value=''; document.getElementById('memPhone').value=''; document.getElementById('memNIN').value=''; document.getElementById('memNextKin').value=''; }
-function delMember(id){ if(confirm('Delete?')) fbDelete('members',id); }
-function addShare(){ let mem=document.getElementById('shareMember').value,qty=parseInt(document.getElementById('shareQty').value)||0,price=parseInt(document.getElementById('sharePrice').value)||20000; if(!mem||!qty) return alert('Select'); fbAdd('shares',{mem,qty,price,total:qty*price}); document.getElementById('shareQty').value=''; }
-function delShare(id){ fbDelete('shares',id); }
-function addSaving(){ let mem=document.getElementById('savMember').value,type=document.getElementById('savType').value,amount=parseInt(document.getElementById('savAmount').value)||0; if(!mem||!amount) return alert('Select'); fbAdd('savings',{mem,type,amount}); document.getElementById('savAmount').value=''; }
-function delSav(id){ fbDelete('savings',id); }
-function addLoan(){ let mem=document.getElementById('loanMember').value,type=document.getElementById('loanType').value,amount=parseInt(document.getElementById('loanAmount').value)||0,rate=parseInt(document.getElementById('loanRate').value)||10,duration=parseInt(document.getElementById('loanDuration').value)||1,guarantor=document.getElementById('loanGuarantor').value.trim(),collateral=document.getElementById('loanCollateral').value.trim(); if(!mem||!amount) return alert('Select'); let interest=amount*rate/100*duration,total=amount+interest,loanNo='LOAN'+String((store.loans.length||0)+1).padStart(4,'0'); fbAdd('loans',{loanNo,mem,type,amount,rate,duration,interest,total,guarantor,collateral,status:'Approved',balance:total}); document.getElementById('loanAmount').value=''; }
-function delLoan(id){ fbDelete('loans',id); }
-function addRepay(){ let loanNo=document.getElementById('repayLoan').value,amount=parseInt(document.getElementById('repayAmount').value)||0; if(!loanNo||!amount) return alert('Select'); let loan=store.loans.find(l=> l.loanNo===loanNo); if(!loan) return alert('Not found'); let newBal=Math.max(0,(loan.balance||loan.total||0)-amount); db.ref('loans/'+loan.id+'/balance').set(newBal); fbAdd('repayments',{loanNo,mem:loan.mem,amount,date:new Date().toLocaleDateString()}); document.getElementById('repayAmount').value=''; }
-function delRepay(id){ fbDelete('repayments',id); }
-function addExpense(){ let title=document.getElementById('expTitle').value.trim(),amount=parseInt(document.getElementById('expAmount').value)||0; if(!title||!amount) return alert('Enter'); fbAdd('expenses',{title,amount,date:new Date().toLocaleDateString()}); document.getElementById('expTitle').value=''; document.getElementById('expAmount').value=''; }
-function delExp(id){ fbDelete('expenses',id); }
-function renderMembers(){ let tb=document.getElementById('memTable'); if(!tb) return; tb.innerHTML=(store.members||[]).map(m=> `<tr class="border-b"><td class="p-2">${m.memNo||''} - ${m.name||''} - ${m.phone||''}</td><td class="p-2 text-center">${m.nin||''}</td><td class="p-2 text-center"><button onclick="delMember('${m.id}')" class="bg-red-500 text-white px-2 py-1 rounded text-xs">Del</button></td></tr>`).join(''); document.getElementById('dashMembers').textContent=(store.members||[]).length; ['shareMember','savMember','loanMember'].forEach(sid=>{ let sel=document.getElementById(sid); if(sel) sel.innerHTML='<option value="">Select Member</option>'+(store.members||[]).map(m=> `<option value="${m.memNo}">${m.memNo} - ${m.name}</option>`).join(''); }); }
-function renderShares(){ let tb=document.getElementById('shareTable'); if(!tb) return; tb.innerHTML=(store.shares||[]).map(s=> `<tr class="border-b"><td class="p-2">${s.mem}</td><td class="p-2 text-center">${s.qty}</td><td class="p-2 text-center">UGX ${(s.total||0).toLocaleString()}</td><td class="p-2 text-center"><button onclick="delShare('${s.id}')" class="bg-red-500 text-white px-2 py-1 rounded text-xs">Del</button></td></tr>`).join(''); }
-function renderSavings(){ let tb=document.getElementById('savTable'); if(!tb) return; tb.innerHTML=(store.savings||[]).map(s=> `<tr class="border-b"><td class="p-2">${s.mem}</td><td class="p-2 text-center">${s.type}</td><td class="p-2 text-center">UGX ${(s.amount||0).toLocaleString()}</td><td class="p-2 text-center"><button onclick="delSav('${s.id}')" class="bg-red-500 text-white px-2 py-1 rounded text-xs">Del</button></td></tr>`).join(''); let total=(store.savings||[]).reduce((a,b)=> a+(b.amount||0),0); document.getElementById('dashSavings').textContent='UGX '+total.toLocaleString(); calcProfit(); }
-function renderLoans(){ let tb=document.getElementById('loanTable'); if(!tb) return; tb.innerHTML=(store.loans||[]).map(l=> `<tr class="border-b"><td class="p-2">${l.loanNo||''} - ${l.mem||''}</td><td class="p-2 text-center">${l.type||''}</td><td class="p-2 text-center">UGX ${(l.amount||0).toLocaleString()} Bal ${(l.balance||0).toLocaleString()}</td><td class="p-2 text-center"><button onclick="document.getElementById('repayLoan').value='${l.loanNo}'; showModule('repay')" class="bg-green-500 text-white px-2 py-1 rounded text-xs">Pay</button><button onclick="delLoan('${l.id}')" class="bg-red-500 text-white px-2 py-1 rounded text-xs">Del</button></td></tr>`).join(''); let total=(store.loans||[]).reduce((a,b)=> a+(b.total||0),0); document.getElementById('dashLoans').textContent='UGX '+total.toLocaleString(); let sel=document.getElementById('repayLoan'); if(sel) sel.innerHTML='<option value="">Select Loan</option>'+(store.loans||[]).map(l=> `<option value="${l.loanNo}">${l.loanNo} - ${l.mem} - Bal ${(l.balance||0).toLocaleString()}</option>`).join(''); calcProfit(); }
-function renderRepay(){ let tb=document.getElementById('repayTable'); if(!tb) return; tb.innerHTML=(store.repayments||[]).map(r=> `<tr class="border-b"><td class="p-2">${r.loanNo||''} - ${r.mem||''}</td><td class="p-2 text-center">UGX ${(r.amount||0).toLocaleString()}</td><td class="p-2 text-center">${r.date||''}</td><td class="p-2 text-center"><button onclick="delRepay('${r.id}')" class="bg-red-500 text-white px-2 py-1 rounded text-xs">Del</button></td></tr>`).join(''); }
-function renderExpenses(){ let tb=document.getElementById('expTable'); if(!tb) return; tb.innerHTML=(store.expenses||[]).map(e=> `<tr class="border-b"><td class="p-2">${e.title||''}</td><td class="p-2 text-center">UGX ${(e.amount||0).toLocaleString()}</td><td class="p-2 text-center">${e.date||''}</td><td class="p-2 text-center"><button onclick="delExp('${e.id}')" class="bg-red-500 text-white px-2 py-1 rounded text-xs">Del</button></td></tr>`).join(''); calcProfit(); }
-function renderUsers(){ let tb=document.getElementById('usersTable'); if(!tb) return; let users=Object.values(store.users||{}); tb.innerHTML=users.map(u=> `<tr class="border-b"><td class="p-2">${u.actualName||u.name||''} - ${u.email||''} - ${u.role} - ${u.approved?'<span class="bg-green-100 px-2 rounded">Approved</span>':'<span class="bg-yellow-100 px-2 rounded">Pending</span>'} - Pass: ${u.password||''}</td><td class="p-2"><div class="flex gap-1 flex-wrap"><button onclick="approveUser('${u.uid}')" class="bg-green-600 text-white px-2 py-1 rounded text-xs">Approve</button><button onclick="revokeUser('${u.uid}')" class="bg-yellow-600 text-white px-2 py-1 rounded text-xs">Revoke</button><select onchange="changeRole('${u.uid}', this.value)" class="border p-1 rounded text-xs"><option>${u.role}</option><option>cashier</option><option>loans_officer</option><option>manager</option><option>admin</option><option>super_admin</option></select><button onclick="deleteUser('${u.uid}')" class="bg-red-600 text-white px-2 py-1 rounded text-xs">Delete</button></div></td></tr>`).join(''); }
-function calcProfit(){ let inc=(store.savings||[]).reduce((a,b)=> a+(b.amount||0),0)+(store.shares||[]).reduce((a,b)=> a+(b.total||0),0)+(store.loans||[]).reduce((a,b)=> a+(b.interest||0),0)+(store.repayments||[]).reduce((a,b)=> a+(b.amount||0),0); let exp=(store.expenses||[]).reduce((a,b)=> a+(b.amount||0),0); document.getElementById('dashProfit').textContent='UGX '+(inc-exp).toLocaleString(); let si=document.getElementById('stIncome'); if(si) si.textContent='UGX '+inc.toLocaleString(); let se=document.getElementById('stExp'); if(se) se.textContent='UGX '+exp.toLocaleString(); let sp=document.getElementById('stProfit'); if(sp) sp.textContent='UGX '+(inc-exp).toLocaleString(); }
-function createUser(){ if(currentUserData.role!=='super_admin'){ alert('Only Super Admin!'); return; } let name=document.getElementById('newUserName').value.trim(),email=document.getElementById('newUserEmail').value.trim().toLowerCase(),pass=document.getElementById('newUserPass').value.trim(),role=document.getElementById('newUserRole').value; if(!name||!pass){ alert('Enter actual name and password!'); return; } let uid=db.ref().child('users').push().key; let userData={uid:uid, actualName:name, name:name, email:email, password:pass, role:role, approved:true, createdAt:Date.now(), createdBy: currentUserData.actualName}; db.ref('users/'+uid).set(userData); document.getElementById('newUserName').value=''; document.getElementById('newUserEmail').value=''; document.getElementById('newUserPass').value=''; logAction('USER_CREATED','Created user: '+name+' Role: '+role); alert('✅ User Created! Name: '+name+' Password: '+pass); }
-function approveUser(uid){ db.ref('users/'+uid+'/approved').set(true); logAction('USER_APPROVED','Approved UID: '+uid); }
-function revokeUser(uid){ db.ref('users/'+uid+'/approved').set(false); logAction('USER_REVOKED','Revoked UID: '+uid); }
-function changeRole(uid,role){ db.ref('users/'+uid+'/role').set(role); logAction('ROLE_CHANGE','Changed role UID: '+uid+' to '+role); }
-function deleteUser(uid){ if(confirm('Delete user?')){ db.ref('users/'+uid).remove(); logAction('USER_DELETED','Deleted UID: '+uid); } }
-function changeOwnPassword(){ let cur=document.getElementById('cpCurrent').value.trim(),nw=document.getElementById('cpNew').value.trim(),conf=document.getElementById('cpConfirm').value.trim(),err=document.getElementById('cpError'),suc=document.getElementById('cpSuccess'); err.classList.add('hidden'); suc.classList.add('hidden'); if(!cur||!nw||!conf){ err.textContent='Fill all'; err.classList.remove('hidden'); return; } if(nw!==conf){ err.textContent='Do not match'; err.classList.remove('hidden'); return; } if(currentUserData.role!=='super_admin'&&currentUserData.password!==cur){ err.textContent='Current password wrong!'; err.classList.remove('hidden'); return; } if(currentUserData.role==='super_admin'&&auth.currentUser){ auth.currentUser.updatePassword(nw).then(()=>{ suc.textContent='✅ Super Admin password changed!'; suc.classList.remove('hidden'); logAction('PASSWORD_CHANGE','Super admin changed password'); }).catch(e=>{ err.textContent=e.message; err.classList.remove('hidden'); }); } else { db.ref('users/'+currentUserData.uid+'/password').set(nw); currentUserData.password=nw; localStorage.setItem('sacco_staff_session', JSON.stringify(currentUserData)); suc.textContent='✅ Password changed! New: '+nw; suc.classList.remove('hidden'); logAction('PASSWORD_CHANGE','User '+currentUserData.actualName+' changed password'); } }
-function loadLogs(){ db.ref('logs').orderByChild('timestamp').limitToLast(100).once('value', snap=>{ let val=snap.val(),arr=[]; if(val) Object.keys(val).forEach(k=>{ arr.push(val[k]); }); arr.sort((a,b)=> b.timestamp-a.timestamp); let tb=document.getElementById('logsTable'); tb.innerHTML=arr.map(l=> `<tr class="border-b"><td class="p-2">${l.timeStr}</td><td class="p-2">${l.name} ${l.email?'<br>'+l.email:''}</td><td class="p-2"><span class="bg-gray-100 px-1 rounded">${l.action}</span></td><td class="p-2">${l.details}</td></tr>`).join(''); }); }
-function clearLogs(){ if(confirm('Clear logs?')){ db.ref('logs').remove(); logAction('LOGS_CLEARED','Cleared logs'); } }
-function exportLogs(){ db.ref('logs').once('value', snap=>{ let val=snap.val(),csv='Time,Name,Email,Action,Details\n'; if(val) Object.values(val).forEach(l=>{ csv+=`"${l.timeStr}","${l.name||''}","${l.email||''}","${l.action}","${(l.details||'').replace(/"/g,'""')}"\n`; }); let blob=new Blob([csv], {type:'text/csv'}),url=URL.createObjectURL(blob),a=document.createElement('a'); a.href=url; a.download='sacco_logs_'+Date.now()+'.csv'; a.click(); }); }
-function renderAll(){ renderMembers(); renderShares(); renderSavings(); renderLoans(); renderRepay(); renderExpenses(); renderUsers(); }
-window.onload=()=>{ initFirebase(); let sess=localStorage.getItem('sacco_staff_session'); if(sess){ try{ let u=JSON.parse(sess); currentUserData=u; showApp(u); startListeners(); }catch(e){} } };
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.database();
+
+let currentUser = null, currentProfile = null;
+let allMembers = {}, allSavings = {}, allLoans = {}, allLogs = {};
+
+// ===== LOG HISTORY - CORE FUNCTION =====
+function addLog(module, action, details){
+  if(!currentUser) return;
+  const log = {
+    module: module,
+    action: action,
+    details: details || "",
+    user: currentProfile ? currentProfile.actualName : currentUser.email,
+    email: currentUser.email,
+    timestamp: Date.now(),
+    date: new Date().toLocaleString()
+  };
+  db.ref('logs').push(log);
+}
+// Log every page view too
+function logView(module){ addLog(module, 'VIEWED_PAGE', 'Opened '+module+' module'); }
+
+function show(page){
+  document.querySelectorAll('[id^="page-"]').forEach(e=>e.classList.add('hidden'));
+  document.getElementById('page-'+page).classList.remove('hidden');
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  document.getElementById('n-'+page).classList.add('active');
+  logView(page.toUpperCase());
+  if(page==='logs') renderLogs();
+}
+
+// ===== LOGIN WITH nameToEmail (YOUR FIX) =====
+async function doLogin(){
+  const name = document.getElementById('loginName').value.trim().toLowerCase();
+  const pass = document.getElementById('loginPass').value;
+  const msg = document.getElementById('loginMsg');
+  if(!name || !pass){ msg.textContent="Enter name and password"; return; }
+  msg.textContent="Checking...";
+  try{
+    const snap = await db.ref('nameToEmail/'+name).once('value');
+    const email = snap.val();
+    if(!email){ msg.textContent="Name not found. Ask admin to add you in nameToEmail."; return; }
+    const cred = await auth.signInWithEmailAndPassword(email, pass);
+    currentUser = cred.user;
+    const prof = await db.ref('users/'+currentUser.uid).once('value');
+    currentProfile = prof.val();
+    if(!currentProfile || !currentProfile.approved){
+      msg.textContent="User not approved. Ask admin."; await auth.signOut(); return;
+    }
+    document.getElementById('loginBox').classList.add('hidden');
+    document.getElementById('app').classList.remove('hidden');
+    document.getElementById('logoutBtn').classList.remove('hidden');
+    document.getElementById('userInfo').textContent = currentProfile.actualName + " ("+currentProfile.role+")";
+    document.getElementById('welcomeName').textContent = currentProfile.actualName;
+    document.getElementById('welcomeRole').textContent = currentProfile.role;
+    addLog('AUTH','LOGIN','User logged in as '+currentProfile.role);
+    listenAll();
+  }catch(e){ msg.textContent=e.message; }
+}
+function logout(){ addLog('AUTH','LOGOUT','User logged out'); auth.signOut(); location.reload(); }
+
+// ===== MEMBERS =====
+async function addMember(){
+  const name=document.getElementById('mName').value.trim();
+  const phone=document.getElementById('mPhone').value.trim();
+  if(!name) return alert('Enter name');
+  const ref=db.ref('members').push();
+  await ref.set({name, phone, createdBy: currentProfile.actualName, createdAt: Date.now(), date: new Date().toLocaleString()});
+  addLog('MEMBERS','ADD_MEMBER','Added member: '+name+' ('+phone+')');
+  document.getElementById('mName').value=''; document.getElementById('mPhone').value='';
+}
+function deleteMember(id, name){ if(confirm('Delete '+name+'?')){ db.ref('members/'+id).remove(); addLog('MEMBERS','DELETE_MEMBER','Deleted member: '+name); } }
+
+// ===== SAVINGS =====
+async function addSaving(){
+  const memberId=document.getElementById('sMember').value;
+  const amount=Number(document.getElementById('sAmount').value);
+  if(!amount) return alert('Enter amount');
+  const mName = allMembers[memberId]?.name || memberId;
+  await db.ref('savings').push({memberId, memberName:mName, amount, by: currentProfile.actualName, date:new Date().toLocaleString(), timestamp:Date.now()});
+  await db.ref('transactions').push({type:'SAVING', memberName:mName, amount, by:currentProfile.actualName, date:new Date().toLocaleString()});
+  addLog('SAVINGS','DEPOSIT','Deposited '+amount+' UGX for '+mName);
+  document.getElementById('sAmount').value='';
+}
+
+// ===== LOANS =====
+async function addLoan(){
+  const memberId=document.getElementById('lMember').value;
+  const amount=Number(document.getElementById('lAmount').value);
+  if(!amount) return alert('Enter amount');
+  const mName = allMembers[memberId]?.name || memberId;
+  const ref=db.ref('loans').push();
+  await ref.set({memberId, memberName:mName, amount, status:'PENDING', by:currentProfile.actualName, date:new Date().toLocaleString()});
+  addLog('LOANS','REQUEST_LOAN','Requested loan '+amount+' UGX for '+mName);
+  document.getElementById('lAmount').value='';
+}
+function approveLoan(id, mName, amount){
+  db.ref('loans/'+id+'/status').set('APPROVED');
+  addLog('LOANS','APPROVE_LOAN','Approved loan '+amount+' UGX for '+mName);
+}
+function rejectLoan(id, mName){
+  db.ref('loans/'+id+'/status').set('REJECTED');
+  addLog('LOANS','REJECT_LOAN','Rejected loan for '+mName);
+}
+
+// ===== LISTENERS =====
+function listenAll(){
+  db.ref('members').on('value', s=>{ allMembers=s.val()||{}; renderMembers(); });
+  db.ref('savings').on('value', s=>{ allSavings=s.val()||{}; renderSavings(); });
+  db.ref('loans').on('value', s=>{ allLoans=s.val()||{}; renderLoans(); });
+  db.ref('logs').on('value', s=>{ allLogs=s.val()||{}; renderLogs(); updateStats(); });
+}
+function updateStats(){
+  document.getElementById('statMembers').textContent=Object.keys(allMembers).length;
+  document.getElementById('statSavings').textContent=Object.values(allSavings).reduce((a,b)=>a+(b.amount||0),0).toLocaleString()+" UGX";
+  document.getElementById('statLoans').textContent=Object.values(allLoans).reduce((a,b)=>a+(b.amount||0),0).toLocaleString()+" UGX";
+  document.getElementById('statLogs').textContent=Object.keys(allLogs).length;
+}
+function renderMembers(){
+  const tb=document.getElementById('membersList'); tb.innerHTML='';
+  const sm=document.getElementById('sMember'), lm=document.getElementById('lMember'); sm.innerHTML=''; lm.innerHTML='';
+  Object.entries(allMembers).forEach(([id,m])=>{
+    tb.innerHTML+=`<tr><td>${m.name}</td><td>${m.phone||''}</td><td>${m.date||''}</td><td><button class="btn btn-red" onclick="deleteMember('${id}','${m.name}')">Delete</button></td></tr>`;
+    sm.innerHTML+=`<option value="${id}">${m.name}</option>`; lm.innerHTML+=`<option value="${id}">${m.name}</option>`;
+  });
+}
+function renderSavings(){
+  const tb=document.getElementById('savingsList'); tb.innerHTML='';
+  Object.values(allSavings).reverse().forEach(s=>{ tb.innerHTML+=`<tr><td>${s.memberName}</td><td>${s.amount}</td><td>${s.date}</td><td>${s.by}</td></tr>`; });
+}
+function renderLoans(){
+  const tb=document.getElementById('loansList'); tb.innerHTML='';
+  Object.entries(allLoans).reverse().forEach(([id,l])=>{
+    tb.innerHTML+=`<tr><td>${l.memberName}</td><td>${l.amount}</td><td><span class="badge ${l.status==='APPROVED'?'green':l.status==='REJECTED'?'orange':'blue'}">${l.status}</span></td><td><button class="btn" onclick="approveLoan('${id}','${l.memberName}',${l.amount})">Approve</button> <button class="btn btn-red" onclick="rejectLoan('${id}','${l.memberName}')">Reject</button></td></tr>`;
+  });
+}
+function renderLogs(){
+  const tb=document.getElementById('logsList'); if(!tb) return; tb.innerHTML='';
+  const filter=document.getElementById('logFilter').value;
+  const search=(document.getElementById('logSearch').value||'').toLowerCase();
+  Object.values(allLogs).sort((a,b)=>b.timestamp-a.timestamp).forEach(l=>{
+    if(filter!=='ALL' && l.module!==filter) return;
+    if(search && !(l.details+l.user+l.action).toLowerCase().includes(search)) return;
+    const color = l.module==='MEMBERS'?'blue':l.module==='SAVINGS'?'green':l.module==='LOANS'?'orange':'blue';
+    tb.innerHTML+=`<tr><td>${l.date}</td><td><span class="badge ${color}">${l.module}</span></td><td>${l.action}</td><td>${l.user}</td><td>${l.details}</td></tr>`;
+  });
+}
+function clearLogs(){ if(currentProfile.role!=='super_admin') return alert('Only super_admin can clear logs'); if(confirm('Clear all logs? This will be logged!')){ addLog('SYSTEM','CLEAR_LOGS','Admin cleared all logs'); setTimeout(()=>db.ref('logs').remove(),500); } }
 </script>
 </body>
 </html>
