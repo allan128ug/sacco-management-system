@@ -7,8 +7,7 @@
 <style>
 *{box-sizing:border-box;font-family:Arial,sans-serif}
 body{margin:0;background:#f1f5f9}
-header{background:#0f172a;color:#fff;padding:15px 20px;display:flex;justify-content:space-between;align-items:center}
-header b{font-size:20px}
+header{background:#0f172a;color:#fff;padding:15px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap}
 nav{display:flex;gap:8px;background:#fff;padding:10px;flex-wrap:wrap;box-shadow:0 2px 5px #0001}
 nav button{padding:10px 14px;border:none;background:#e2e8f0;border-radius:8px;cursor:pointer;font-weight:bold}
 nav button.active{background:#0f172a;color:#fff}
@@ -25,10 +24,8 @@ th,td{padding:10px;border-bottom:1px solid #e2e8f0;text-align:left;font-size:14p
 </style>
 </head>
 <body>
-
 <header><b>🏦 ALLAN SACCO</b><span id="userInfo"></span><button class="btn btn-red hidden" id="logoutBtn" onclick="logout()">Logout</button></header>
 
-<!-- LOGIN -->
 <div id="loginBox">
   <h2>Login</h2>
   <p>Use your name as registered, e.g. <b>allan amon</b></p>
@@ -36,55 +33,66 @@ th,td{padding:10px;border-bottom:1px solid #e2e8f0;text-align:left;font-size:14p
   <input id="loginPass" type="password" placeholder="Password">
   <button class="btn btn-dark" style="width:100%" onclick="doLogin()">Login</button>
   <p id="loginMsg" style="color:red"></p>
+  <p style="font-size:13px;color:#64748b">Don't have account? Ask Admin Allan to add you.</p>
 </div>
 
-<!-- APP -->
 <div id="app" class="hidden">
 <nav>
   <button onclick="show('dashboard')" id="n-dashboard" class="active">📊 Dashboard</button>
-  <button onclick="show('members')" id="n-members">👥 Members</button>
+  <button onclick="show('members')" id="n-members" class="admin-only">👥 Members</button>
   <button onclick="show('savings')" id="n-savings">💰 Savings</button>
   <button onclick="show('loans')" id="n-loans">🏦 Loans</button>
-  <button onclick="show('logs')" id="n-logs">📜 Log History</button>
+  <button onclick="show('logs')" id="n-logs" class="admin-only">📜 Log History</button>
 </nav>
 
-<!-- DASHBOARD -->
 <div id="page-dashboard" class="card">
   <h2>Dashboard</h2>
   <p>Welcome <b id="welcomeName"></b> | Role: <b id="welcomeRole"></b></p>
-  <p>Total Members: <b id="statMembers">0</b> | Total Savings: <b id="statSavings">0 UGX</b> | Total Loans: <b id="statLoans">0 UGX</b> | Logs: <b id="statLogs">0</b></p>
+  <p id="adminStats">Total Members: <b id="statMembers">0</b> | Total Savings: <b id="statSavings">0 UGX</b> | Total Loans: <b id="statLoans">0 UGX</b> | Logs: <b id="statLogs">0</b></p>
+  <p id="memberStats" class="hidden">My Savings: <b id="mySavings">0 UGX</b> | My Loans: <b id="myLoans">0 UGX</b></p>
+  <p style="background:#fef9c3;padding:10px;border-radius:8px" id="memberNote" class="hidden">👋 You are a MEMBER. You can only see YOUR OWN savings and loans. You cannot see other members or logs.</p>
 </div>
 
-<!-- MEMBERS -->
 <div id="page-members" class="card hidden">
-  <h2>Members</h2>
+  <h2>Members - Admin Only</h2>
   <input id="mName" placeholder="Member Full Name">
   <input id="mPhone" placeholder="Phone e.g. 0770...">
   <button class="btn" onclick="addMember()">+ Add Member</button>
   <table><thead><tr><th>Name</th><th>Phone</th><th>Date</th><th>Action</th></tr></thead><tbody id="membersList"></tbody></table>
 </div>
 
-<!-- SAVINGS -->
 <div id="page-savings" class="card hidden">
   <h2>Savings / Deposit</h2>
-  <select id="sMember"></select>
-  <input id="sAmount" type="number" placeholder="Amount UGX">
-  <button class="btn" onclick="addSaving()">Deposit Saving</button>
+  <div id="savingFormAdmin">
+    <select id="sMember"></select>
+    <input id="sAmount" type="number" placeholder="Amount UGX">
+    <button class="btn" onclick="addSaving()">Deposit Saving</button>
+  </div>
+  <div id="savingFormMember" class="hidden">
+    <p>Deposit for <b id="myNameLabel"></b></p>
+    <input id="sAmountMember" type="number" placeholder="Amount UGX">
+    <button class="btn" onclick="addSavingMember()">Deposit My Saving</button>
+  </div>
   <table><thead><tr><th>Member</th><th>Amount</th><th>Date</th><th>By</th></tr></thead><tbody id="savingsList"></tbody></table>
 </div>
 
-<!-- LOANS -->
 <div id="page-loans" class="card hidden">
   <h2>Loans</h2>
-  <select id="lMember"></select>
-  <input id="lAmount" type="number" placeholder="Loan Amount UGX">
-  <button class="btn btn-blue" onclick="addLoan()">Request Loan</button>
+  <div id="loanFormAdmin">
+    <select id="lMember"></select>
+    <input id="lAmount" type="number" placeholder="Loan Amount UGX">
+    <button class="btn btn-blue" onclick="addLoan()">Request Loan</button>
+  </div>
+  <div id="loanFormMember" class="hidden">
+    <p>Request Loan for <b id="myNameLabel2"></b></p>
+    <input id="lAmountMember" type="number" placeholder="Loan Amount UGX">
+    <button class="btn btn-blue" onclick="addLoanMember()">Request My Loan</button>
+  </div>
   <table><thead><tr><th>Member</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead><tbody id="loansList"></tbody></table>
 </div>
 
-<!-- LOGS -->
 <div id="page-logs" class="card hidden">
-  <h2>📜 Log History - All Modules</h2>
+  <h2>📜 Log History - Admin Only</h2>
   <div style="display:flex;gap:8px">
     <select id="logFilter" onchange="renderLogs()"><option value="ALL">All Modules</option><option value="AUTH">AUTH</option><option value="MEMBERS">MEMBERS</option><option value="SAVINGS">SAVINGS</option><option value="LOANS">LOANS</option><option value="SYSTEM">SYSTEM</option></select>
     <input id="logSearch" placeholder="Search logs..." oninput="renderLogs()">
@@ -110,28 +118,18 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.database();
+let currentUser=null, currentProfile=null;
+let allMembers={}, allSavings={}, allLoans={}, allLogs={};
+let isAdmin=false;
 
-let currentUser = null, currentProfile = null;
-let allMembers = {}, allSavings = {}, allLoans = {}, allLogs = {};
-
-// ===== LOG HISTORY - CORE FUNCTION =====
 function addLog(module, action, details){
   if(!currentUser) return;
-  const log = {
-    module: module,
-    action: action,
-    details: details || "",
-    user: currentProfile ? currentProfile.actualName : currentUser.email,
-    email: currentUser.email,
-    timestamp: Date.now(),
-    date: new Date().toLocaleString()
-  };
-  db.ref('logs').push(log);
+  db.ref('logs').push({module, action, details: details||"", user: currentProfile?currentProfile.actualName:currentUser.email, email: currentUser.email, timestamp: Date.now(), date: new Date().toLocaleString()});
 }
-// Log every page view too
-function logView(module){ addLog(module, 'VIEWED_PAGE', 'Opened '+module+' module'); }
-
+function logView(m){ addLog(m,'VIEWED_PAGE','Opened '+m+' module'); }
 function show(page){
+  // Block members from admin pages
+  if(!isAdmin && (page==='members' || page==='logs')){ alert('Access Denied! Admin Only.'); return; }
   document.querySelectorAll('[id^="page-"]').forEach(e=>e.classList.add('hidden'));
   document.getElementById('page-'+page).classList.remove('hidden');
   document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
@@ -139,93 +137,120 @@ function show(page){
   logView(page.toUpperCase());
   if(page==='logs') renderLogs();
 }
-
-// ===== LOGIN WITH nameToEmail (YOUR FIX) =====
 async function doLogin(){
-  const name = document.getElementById('loginName').value.trim().toLowerCase();
-  const pass = document.getElementById('loginPass').value;
-  const msg = document.getElementById('loginMsg');
-  if(!name || !pass){ msg.textContent="Enter name and password"; return; }
+  const name=document.getElementById('loginName').value.trim().toLowerCase();
+  const pass=document.getElementById('loginPass').value;
+  const msg=document.getElementById('loginMsg');
+  if(!name||!pass){msg.textContent="Enter name and password";return;}
   msg.textContent="Checking...";
   try{
-    const snap = await db.ref('nameToEmail/'+name).once('value');
-    const email = snap.val();
-    if(!email){ msg.textContent="Name not found. Ask admin to add you in nameToEmail."; return; }
-    const cred = await auth.signInWithEmailAndPassword(email, pass);
-    currentUser = cred.user;
-    const prof = await db.ref('users/'+currentUser.uid).once('value');
-    currentProfile = prof.val();
-    if(!currentProfile || !currentProfile.approved){
-      msg.textContent="User not approved. Ask admin."; await auth.signOut(); return;
-    }
+    const snap=await db.ref('nameToEmail/'+name).once('value');
+    const email=snap.val();
+    if(!email){msg.textContent="Name not found. Ask admin to add you.";return;}
+    const cred=await auth.signInWithEmailAndPassword(email,pass);
+    currentUser=cred.user;
+    const prof=await db.ref('users/'+currentUser.uid).once('value');
+    currentProfile=prof.val();
+    if(!currentProfile||!currentProfile.approved){msg.textContent="User not approved. Ask admin.";await auth.signOut();return;}
+    isAdmin = (currentProfile.role==='super_admin' || currentProfile.role==='admin');
     document.getElementById('loginBox').classList.add('hidden');
     document.getElementById('app').classList.remove('hidden');
     document.getElementById('logoutBtn').classList.remove('hidden');
-    document.getElementById('userInfo').textContent = currentProfile.actualName + " ("+currentProfile.role+")";
-    document.getElementById('welcomeName').textContent = currentProfile.actualName;
-    document.getElementById('welcomeRole').textContent = currentProfile.role;
-    addLog('AUTH','LOGIN','User logged in as '+currentProfile.role);
+    document.getElementById('userInfo').textContent=currentProfile.actualName+" ("+currentProfile.role+")";
+    document.getElementById('welcomeName').textContent=currentProfile.actualName;
+    document.getElementById('welcomeRole').textContent=currentProfile.role;
+    document.getElementById('myNameLabel').textContent=currentProfile.actualName;
+    document.getElementById('myNameLabel2').textContent=currentProfile.actualName;
+    if(isAdmin){
+      document.getElementById('adminStats').classList.remove('hidden');
+      document.getElementById('memberStats').classList.add('hidden');
+      document.getElementById('memberNote').classList.add('hidden');
+      document.getElementById('savingFormAdmin').classList.remove('hidden');
+      document.getElementById('savingFormMember').classList.add('hidden');
+      document.getElementById('loanFormAdmin').classList.remove('hidden');
+      document.getElementById('loanFormMember').classList.add('hidden');
+    } else {
+      document.querySelectorAll('.admin-only').forEach(e=>e.classList.add('hidden'));
+      document.getElementById('adminStats').classList.add('hidden');
+      document.getElementById('memberStats').classList.remove('hidden');
+      document.getElementById('memberNote').classList.remove('hidden');
+      document.getElementById('savingFormAdmin').classList.add('hidden');
+      document.getElementById('savingFormMember').classList.remove('hidden');
+      document.getElementById('loanFormAdmin').classList.add('hidden');
+      document.getElementById('loanFormMember').classList.remove('hidden');
+    }
+    addLog('AUTH','LOGIN','Logged in as '+currentProfile.role);
     listenAll();
-  }catch(e){ msg.textContent=e.message; }
+  }catch(e){msg.textContent=e.message;}
 }
 function logout(){ addLog('AUTH','LOGOUT','User logged out'); auth.signOut(); location.reload(); }
-
-// ===== MEMBERS =====
 async function addMember(){
+  if(!isAdmin) return alert('Admin only');
   const name=document.getElementById('mName').value.trim();
   const phone=document.getElementById('mPhone').value.trim();
   if(!name) return alert('Enter name');
-  const ref=db.ref('members').push();
-  await ref.set({name, phone, createdBy: currentProfile.actualName, createdAt: Date.now(), date: new Date().toLocaleString()});
+  await db.ref('members').push({name, phone, createdBy: currentProfile.actualName, createdAt: Date.now(), date: new Date().toLocaleString()});
   addLog('MEMBERS','ADD_MEMBER','Added member: '+name+' ('+phone+')');
   document.getElementById('mName').value=''; document.getElementById('mPhone').value='';
 }
-function deleteMember(id, name){ if(confirm('Delete '+name+'?')){ db.ref('members/'+id).remove(); addLog('MEMBERS','DELETE_MEMBER','Deleted member: '+name); } }
-
-// ===== SAVINGS =====
+function deleteMember(id,name){ if(!isAdmin) return; if(confirm('Delete '+name+'?')){ db.ref('members/'+id).remove(); addLog('MEMBERS','DELETE_MEMBER','Deleted member: '+name); } }
 async function addSaving(){
+  if(!isAdmin) return;
   const memberId=document.getElementById('sMember').value;
   const amount=Number(document.getElementById('sAmount').value);
   if(!amount) return alert('Enter amount');
-  const mName = allMembers[memberId]?.name || memberId;
+  const mName=allMembers[memberId]?.name||memberId;
   await db.ref('savings').push({memberId, memberName:mName, amount, by: currentProfile.actualName, date:new Date().toLocaleString(), timestamp:Date.now()});
-  await db.ref('transactions').push({type:'SAVING', memberName:mName, amount, by:currentProfile.actualName, date:new Date().toLocaleString()});
   addLog('SAVINGS','DEPOSIT','Deposited '+amount+' UGX for '+mName);
   document.getElementById('sAmount').value='';
 }
-
-// ===== LOANS =====
+async function addSavingMember(){
+  const amount=Number(document.getElementById('sAmountMember').value);
+  if(!amount) return alert('Enter amount');
+  const mName=currentProfile.actualName;
+  await db.ref('savings').push({memberId:'self-'+currentUser.uid, memberName:mName, amount, by: mName, date:new Date().toLocaleString(), timestamp:Date.now()});
+  addLog('SAVINGS','DEPOSIT','Member deposited '+amount+' UGX for self');
+  document.getElementById('sAmountMember').value='';
+}
 async function addLoan(){
+  if(!isAdmin) return;
   const memberId=document.getElementById('lMember').value;
   const amount=Number(document.getElementById('lAmount').value);
   if(!amount) return alert('Enter amount');
-  const mName = allMembers[memberId]?.name || memberId;
-  const ref=db.ref('loans').push();
-  await ref.set({memberId, memberName:mName, amount, status:'PENDING', by:currentProfile.actualName, date:new Date().toLocaleString()});
+  const mName=allMembers[memberId]?.name||memberId;
+  await db.ref('loans').push({memberId, memberName:mName, amount, status:'PENDING', by: currentProfile.actualName, date:new Date().toLocaleString()});
   addLog('LOANS','REQUEST_LOAN','Requested loan '+amount+' UGX for '+mName);
   document.getElementById('lAmount').value='';
 }
-function approveLoan(id, mName, amount){
-  db.ref('loans/'+id+'/status').set('APPROVED');
-  addLog('LOANS','APPROVE_LOAN','Approved loan '+amount+' UGX for '+mName);
+async function addLoanMember(){
+  const amount=Number(document.getElementById('lAmountMember').value);
+  if(!amount) return alert('Enter amount');
+  const mName=currentProfile.actualName;
+  await db.ref('loans').push({memberId:'self-'+currentUser.uid, memberName:mName, amount, status:'PENDING', by: mName, date:new Date().toLocaleString()});
+  addLog('LOANS','REQUEST_LOAN','Member requested loan '+amount+' UGX for self');
+  document.getElementById('lAmountMember').value='';
 }
-function rejectLoan(id, mName){
-  db.ref('loans/'+id+'/status').set('REJECTED');
-  addLog('LOANS','REJECT_LOAN','Rejected loan for '+mName);
-}
-
-// ===== LISTENERS =====
+function approveLoan(id,mName,amount){ if(!isAdmin) return; db.ref('loans/'+id+'/status').set('APPROVED'); addLog('LOANS','APPROVE_LOAN','Approved loan '+amount+' UGX for '+mName); }
+function rejectLoan(id,mName){ if(!isAdmin) return; db.ref('loans/'+id+'/status').set('REJECTED'); addLog('LOANS','REJECT_LOAN','Rejected loan for '+mName); }
 function listenAll(){
-  db.ref('members').on('value', s=>{ allMembers=s.val()||{}; renderMembers(); });
-  db.ref('savings').on('value', s=>{ allSavings=s.val()||{}; renderSavings(); });
-  db.ref('loans').on('value', s=>{ allLoans=s.val()||{}; renderLoans(); });
-  db.ref('logs').on('value', s=>{ allLogs=s.val()||{}; renderLogs(); updateStats(); });
+  db.ref('members').on('value',s=>{allMembers=s.val()||{}; renderMembers();});
+  db.ref('savings').on('value',s=>{allSavings=s.val()||{}; renderSavings(); updateStats();});
+  db.ref('loans').on('value',s=>{allLoans=s.val()||{}; renderLoans(); updateStats();});
+  db.ref('logs').on('value',s=>{allLogs=s.val()||{}; if(isAdmin){renderLogs();} updateStats();});
 }
+function isMyRecord(name){ return !isAdmin && name.toLowerCase()===currentProfile.actualName.toLowerCase(); }
 function updateStats(){
-  document.getElementById('statMembers').textContent=Object.keys(allMembers).length;
-  document.getElementById('statSavings').textContent=Object.values(allSavings).reduce((a,b)=>a+(b.amount||0),0).toLocaleString()+" UGX";
-  document.getElementById('statLoans').textContent=Object.values(allLoans).reduce((a,b)=>a+(b.amount||0),0).toLocaleString()+" UGX";
-  document.getElementById('statLogs').textContent=Object.keys(allLogs).length;
+  if(isAdmin){
+    document.getElementById('statMembers').textContent=Object.keys(allMembers).length;
+    document.getElementById('statSavings').textContent=Object.values(allSavings).reduce((a,b)=>a+(b.amount||0),0).toLocaleString()+" UGX";
+    document.getElementById('statLoans').textContent=Object.values(allLoans).reduce((a,b)=>a+(b.amount||0),0).toLocaleString()+" UGX";
+    document.getElementById('statLogs').textContent=Object.keys(allLogs).length;
+  } else {
+    const myS=Object.values(allSavings).filter(s=>s.memberName.toLowerCase()===currentProfile.actualName.toLowerCase()).reduce((a,b)=>a+(b.amount||0),0);
+    const myL=Object.values(allLoans).filter(l=>l.memberName.toLowerCase()===currentProfile.actualName.toLowerCase()).reduce((a,b)=>a+(b.amount||0),0);
+    document.getElementById('mySavings').textContent=myS.toLocaleString()+" UGX";
+    document.getElementById('myLoans').textContent=myL.toLocaleString()+" UGX";
+  }
 }
 function renderMembers(){
   const tb=document.getElementById('membersList'); tb.innerHTML='';
@@ -237,26 +262,32 @@ function renderMembers(){
 }
 function renderSavings(){
   const tb=document.getElementById('savingsList'); tb.innerHTML='';
-  Object.values(allSavings).reverse().forEach(s=>{ tb.innerHTML+=`<tr><td>${s.memberName}</td><td>${s.amount}</td><td>${s.date}</td><td>${s.by}</td></tr>`; });
+  Object.values(allSavings).reverse().forEach(s=>{
+    if(!isAdmin && s.memberName.toLowerCase()!==currentProfile.actualName.toLowerCase()) return;
+    tb.innerHTML+=`<tr><td>${s.memberName}</td><td>${s.amount}</td><td>${s.date}</td><td>${s.by}</td></tr>`;
+  });
 }
 function renderLoans(){
   const tb=document.getElementById('loansList'); tb.innerHTML='';
   Object.entries(allLoans).reverse().forEach(([id,l])=>{
-    tb.innerHTML+=`<tr><td>${l.memberName}</td><td>${l.amount}</td><td><span class="badge ${l.status==='APPROVED'?'green':l.status==='REJECTED'?'orange':'blue'}">${l.status}</span></td><td><button class="btn" onclick="approveLoan('${id}','${l.memberName}',${l.amount})">Approve</button> <button class="btn btn-red" onclick="rejectLoan('${id}','${l.memberName}')">Reject</button></td></tr>`;
+    if(!isAdmin && l.memberName.toLowerCase()!==currentProfile.actualName.toLowerCase()) return;
+    const btns = isAdmin ? `<button class="btn" onclick="approveLoan('${id}','${l.memberName}',${l.amount})">Approve</button> <button class="btn btn-red" onclick="rejectLoan('${id}','${l.memberName}')">Reject</button>` : `<span style="color:#64748b">Waiting Admin</span>`;
+    tb.innerHTML+=`<tr><td>${l.memberName}</td><td>${l.amount}</td><td><span class="badge ${l.status==='APPROVED'?'green':l.status==='REJECTED'?'orange':'blue'}">${l.status}</span></td><td>${btns}</td></tr>`;
   });
 }
 function renderLogs(){
+  if(!isAdmin) return;
   const tb=document.getElementById('logsList'); if(!tb) return; tb.innerHTML='';
   const filter=document.getElementById('logFilter').value;
   const search=(document.getElementById('logSearch').value||'').toLowerCase();
   Object.values(allLogs).sort((a,b)=>b.timestamp-a.timestamp).forEach(l=>{
     if(filter!=='ALL' && l.module!==filter) return;
     if(search && !(l.details+l.user+l.action).toLowerCase().includes(search)) return;
-    const color = l.module==='MEMBERS'?'blue':l.module==='SAVINGS'?'green':l.module==='LOANS'?'orange':'blue';
+    const color=l.module==='MEMBERS'?'blue':l.module==='SAVINGS'?'green':l.module==='LOANS'?'orange':'blue';
     tb.innerHTML+=`<tr><td>${l.date}</td><td><span class="badge ${color}">${l.module}</span></td><td>${l.action}</td><td>${l.user}</td><td>${l.details}</td></tr>`;
   });
 }
-function clearLogs(){ if(currentProfile.role!=='super_admin') return alert('Only super_admin can clear logs'); if(confirm('Clear all logs? This will be logged!')){ addLog('SYSTEM','CLEAR_LOGS','Admin cleared all logs'); setTimeout(()=>db.ref('logs').remove(),500); } }
+function clearLogs(){ if(!isAdmin) return alert('Only admin'); if(confirm('Clear all logs?')){ addLog('SYSTEM','CLEAR_LOGS','Admin cleared all logs'); setTimeout(()=>db.ref('logs').remove(),500); } }
 </script>
 </body>
 </html>
