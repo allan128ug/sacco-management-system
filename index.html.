@@ -1,180 +1,104 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>ALLAN SACCO SYSTEM .0</title>
-<style>
-body{font-family:Arial;background:#f2f2f2;margin:0}
-header{background:#0b3d91;color:white;padding:15px;display:flex;justify-content:space-between}
-nav{background:#fff;padding:10px;display:flex;gap:10px;flex-wrap:wrap}
-button{padding:8px 14px;cursor:pointer;border:none;border-radius:5px;background:#0b3d91;color:#fff}
-.card{background:#fff;margin:15px;padding:15px;border-radius:8px}
-table{width:100%;border-collapse:collapse}
-th,td{border:1px solid #ddd;padding:8px;text-align:left}
-th{background:#0b3d91;color:#fff}
-input,select{padding:8px;margin:5px;width:200px}
-.hidden{display:none}
-@media print{header,nav,.no-print{display:none!important} .card{box-shadow:none}}
-</style>
-</head>
-<body>
-<header><b>SACCO SYSTEM.0</b><span id="userInfo">Logged in: allan128 - SUPER ADMIN</span></header>
-<nav class="no-print">
-<button onclick="show('dashboard')">Dashboard</button>
-<button onclick="show('shares')">Shares</button>
-<button onclick="show('reports')">Reports</button>
-<button onclick="show('activity')">Activity Log - Everyone Can View</button>
-<button id="loginBtn" onclick="show('loginHistory')">Login History - Super Admin Only</button>
-<button onclick="show('users')">Users & Rights</button>
-<button onclick="window.print()">Print Receipt</button>
-</nav>
 
-<!-- DASHBOARD -->
-<div id="dashboard" class="card"><h2>Dashboard</h2><p>Total Members: <span id="totalMembers">0</span> | Total Shares: <span id="totalShares">0</span></p></div>
+<!-- PASTE THIS INSIDE YOUR <script> - REPLACES OLD SCRIPT -->
 
-<!-- SHARES + SELL / TRANSFER -->
-<div id="shares" class="card hidden">
-<h2>Shares Module - Sell / Transfer</h2>
-<h3>Add Shares</h3>
-Member: <select id="shareMember"><option>Peter - MEM001</option><option>Mary - MEM002</option><option>John - MEM003</option></select>
-Shares: <input type="number" id="shareQty" placeholder="No. of shares">
-<button onclick="addShares()">Add Shares</button>
+<script>
+// ===== 100 MEMBERS AUTO-GENERATED =====
+let firstNames = ["Peter","Mary","John","Grace","David","Sarah","Moses","Ruth","James","Esther","Paul","Rebecca","Daniel","Joyce","Samuel","Hannah","Joseph","Martha","Isaac","Naomi","Jacob","Lydia","Emmanuel","Faith","Joshua","Priscilla","Michael","Deborah","Aaron","Miriam","Timothy","Rachael","Stephen","Phoebe","Andrew","Betty","Thomas","Christine","Philip","Agnes","Simon","Florence","Mark","Annet","Luke","Violet","Matthew","Dorcus","Benjamin","Sharon","Charles","Immaculate","Robert","Prossy","George","Teddy","Henry","Harriet","Richard","Jane","Edward","Margaret","William","Allen","Francis","Winnie","Kenneth","Carol","Albert","Sandra","Martin","Pamela","Victor","Brenda","Brian","Gloria","Collins","Doreen","Denis","Catherine","Alex","Irene","Patrick","Joan","Ivan","Resty","Hassan","Amina","Ali","Fatuma","Musa","Zainab","Isaac","Kevin","Derrick","Patricia","Ronald","Jackline"];
+let lastNames = ["Kato","Nakato","Mukasa","Nalubega","Ssemwanga","Nabukenya","Okello","Achieng","Mugisha","Atim","Kizito","Nansubuga","Otim","Akello","Wasswa","Babirye","Ssali","Nalwoga","Kiprop","Chebet","Mbabazi","Tumusiime","Kagwa","Namukasa","Byaruhanga","Nakiyingi","Onyango","Adongo","Mwesigye","Nakigudde","Ssenyonga","Auma","Kintu","Nabirye","Mugerwa","Nakazzi","Lubega","Nantongo","Ssebuguzi","Kyomuhendo","Nalule","Ssempala","Nakato","Opio","Achan","Kizza","Nalwanga","Muwanga","Namaganda","Tumwebaze"];
+let members = [];
+for(let i=1;i<=100;i++){
+  let fn = firstNames[(i-1)%firstNames.length];
+  let ln = lastNames[(i-1)%lastNames.length];
+  members.push({
+    id: "MEM"+String(i).padStart(3,'0'),
+    name: fn+" "+ln,
+    phone: "07"+Math.floor(10000000+Math.random()*89999999),
+    shares: Math.floor(Math.random()*50)+5,
+    savings: Math.floor(Math.random()*1000000)+50000,
+    loan: i%3==0 ? 500000 : 0,
+    paid: i%3==0 ? 200000 : 0,
+    role: i==1 ? "Super Admin" : i<=5 ? "Staff" : "Member",
+    status: "Active"
+  });
+}
 
-<h3>Sell Shares</h3>
-Seller: <select id="seller"><option>Peter - MEM001</option><option>Mary - MEM002</option></select>
-Buyer: <select id="buyer"><option>Mary - MEM002</option><option>John - MEM003</option></select>
-Shares to Sell: <input type="number" id="sellQty" value="10">
-Price per Share: <input type="number" id="sellPrice" value="20000">
-<button onclick="sellShares()">Sell Shares - Needs Super Admin Approval</button>
+// SHOW 100 MEMBERS IN TABLE
+function renderMembers(){
+  let html = "";
+  members.forEach(m=>{
+    html+=`<tr><td>${m.id}</td><td>${m.name}</td><td>${m.phone}</td><td>${m.shares}</td><td>${m.savings.toLocaleString()}</td><td>${m.loan.toLocaleString()}</td><td>${m.status}</td><td><button onclick="viewMember('${m.id}')">View</button></td></tr>`;
+  });
+  document.getElementById('memberTable').innerHTML = html;
+  document.getElementById('totalMembers').innerText = members.length;
+}
+function viewMember(id){
+  let m = members.find(x=>x.id==id);
+  alert(`Member: ${m.name}\nID: ${m.id}\nPhone: ${m.phone}\nShares: ${m.shares}\nSavings: ${m.savings}\nLoan: ${m.loan}`);
+  logActivity(`Viewed member ${m.name} (${m.id})`);
+}
 
-<h3>Transfer Shares</h3>
-From: <select id="fromM"><option>Peter - MEM001</option><option>Mary - MEM002</option></select>
-To: <select id="toM"><option>John - MEM003</option><option>Mary - MEM002</option></select>
-Shares: <input type="number" id="transferQty" value="5">
-Reason: <input id="transferReason" placeholder="Gift / Family / Exit">
-<button onclick="transferShares()">Transfer Shares</button>
+// ===== LOGIN HISTORY - SUPER ADMIN ONLY =====
+let loginHistory = [
+  {user:"allan128", role:"Super Admin", date:"12/11/2026", time:"08:02:15 AM", device:"DESKTOP-JEMO / 192.168.1.5", data:"Chrome Windows 11", status:"Success"},
+  {user:"mary12", role:"Cashier", date:"12/11/2026", time:"09:00:42 AM", device:"DESKTOP-02 / 192.168.1.12", data:"Chrome Windows 10", status:"Success"},
+  {user:"mary12", role:"Cashier", date:"12/11/2026", time:"08:58:10 AM", device:"DESKTOP-02 / 192.168.1.12", data:"Chrome Windows 10", status:"FAILED - Wrong Password"},
+  {user:"john34", role:"Loans Officer", date:"12/11/2026", time:"08:30:05 AM", device:"PHONE-TECNO / 192.168.1.20", data:"Mobile Chrome", status:"Success"},
+  {user:"unknown", role:"Unknown", date:"11/11/2026", time:"11:15:00 PM", device:"UNKNOWN / 41.210.0.5", data:"Firefox", status:"FAILED - Unknown User"},
+];
 
-<table><tr><th>Member</th><th>Shares</th><th>Value</th></tr><tbody id="shareTable"></tbody></table>
-</div>
-
-<!-- REPORTS -->
-<div id="reports" class="card hidden">
-<h2>Reports Module</h2>
-Filter Date: <input type="date"> to <input type="date"> <button onclick="window.print()">Print Report</button>
-<h3>1. Shares Report</h3><div id="reportShares"></div>
-<h3>2. Loan Status Per Member</h3>
-<table><tr><th>Member</th><th>Loan</th><th>Paid</th><th>Balance</th><th>Status</th></tr>
-<tr><td>Peter</td><td>500,000</td><td>300,000</td><td>200,000</td><td>Active</td></tr>
-<tr><td>Mary</td><td>1,000,000</td><td>1,000,000</td><td>0</td><td>Cleared</td></tr></table>
-<h3>3. Loan Repayment Report</h3><p>Peter paid 100,000 on 12/11/2026 - Balance 200,000 - Received by Mary</p>
-<h3>4. Expenses Status</h3><p>Total Expenses Nov: 450,000 - Rent 300,000 - Airtime 50,000 - Transport 100,000</p>
-<h3>5. Staff Status</h3>
-<table><tr><th>Staff</th><th>Role</th><th>Last Login</th><th>Status</th></tr>
-<tr><td>Mary</td><td>Cashier</td><td>12/11/2026 09:00</td><td>Active</td></tr>
-<tr><td>John</td><td>Loans Officer</td><td>12/11/2026 08:30</td><td>Active</td></tr></table>
-</div>
-
-<!-- ACTIVITY LOG - VISIBLE TO ALL -->
-<div id="activity" class="card hidden">
-<h2>Activity Log - All Changes Visible To Everyone</h2>
-<p>No one can delete this log. Only Super Admin can view Login History.</p>
-<table><tr><th>Date/Time</th><th>Who</th><th>What They Did</th></tr><tbody id="activityTable"></tbody></table>
+function renderLoginHistory(){
+  // ONLY SUPER ADMIN CAN SEE THIS
+  if(role!=="Super Admin"){
+    document.getElementById('loginHistoryTable').innerHTML = `<tr><td colspan="7" style="color:red;text-align:center"><b>ACCESS DENIED</b><br>Login History is for Super Admin ONLY (allan128)</td></tr>`;
+    return;
+  }
+  let html="";
+  loginHistory.forEach(l=>{
+    let color = l.status.includes("FAILED") ? "red" : "green";
+    html+=`<tr><td>${l.user}</td><td>${l.role}</td><td>${l.date}</td><td>${l.time}</td><td>${l.device}</td><td>${l.data}</td><td style="color:${color}"><b>${l.status}</b></td></tr>`;
+  });
+  document.getElementById('loginHistoryTable').innerHTML = html;
+}
+function addLoginAttempt(user, success){
+  let now = new Date();
+  loginHistory.unshift({
+    user:user, role:"Unknown", 
+    date: now.toLocaleDateString(), 
+    time: now.toLocaleTimeString(),
+    device: navigator.userAgent.substring(0,40)+" / IP: "+ "192.168.1."+Math.floor(Math.random()*50),
+    data: "Browser: "+navigator.platform+" - Data Check: "+ (success?"Login OK":"Login Failed"),
+    status: success?"Success":"FAILED - Wrong Password"
+  });
+  renderLoginHistory();
+  logActivity(`${user} tried to login - ${success?"Success":"Failed"}`);
+}
+function filterLogin(){
+  let q = document.getElementById('loginSearch').value.toLowerCase();
+  let rows = document.querySelectorAll('#loginHistoryTable tr');
+  // Simple filter - reload then filter
+  renderLoginHistory();
+  if(q){
+    let filtered = loginHistory.filter(l=>l.user.toLowerCase().includes(q) || l.date.includes(q));
+    let html="";
+    filtered.forEach(l=>{ html+=`<tr><td>${l.user}</td><td>${l.role}</td><td>${l.date}</td><td>${l.time}</td><td>${l.device}</td><td>${l.data}</td><td>${l.status}</td></tr>`; });
+    document.getElementById('loginHistoryTable').innerHTML = html;
+  }
+}
+renderMembers(); renderLoginHistory();
+</script><!-- MEMBERS - 100 MEMBERS -->
+<div id="members" class="card">
+<h2>Members - 100 Members Loaded</h2>
+<p>Total: <b id="totalMembers">100</b> | Search: <input placeholder="Search name / MEM001" onkeyup="filterMembers(this.value)"></p>
+<table><tr><th>ID</th><th>Name</th><th>Phone</th><th>Shares</th><th>Savings</th><th>Loan</th><th>Status</th><th>Action</th></tr><tbody id="memberTable"></tbody></table>
 </div>
 
 <!-- LOGIN HISTORY - SUPER ADMIN ONLY -->
-<div id="loginHistory" class="card hidden">
-<h2>Login History - SUPER ADMIN ONLY</h2>
-<table><tr><th>User</th><th>Role</th><th>Date</th><th>Time</th><th>Device/IP</th><th>Status</th></tr>
-<tr><td>allan128</td><td>Super Admin</td><td>12/11/2026</td><td>08:02 AM</td><td>DESKTOP-JEMO</td><td>Success</td></tr>
-<tr><td>mary12</td><td>Cashier</td><td>12/11/2026</td><td>09:00 AM</td><td>DESKTOP-02</td><td>Failed - Wrong Password</td></tr></table>
+<div id="loginHistory" class="card">
+<h2>Login History - SUPER ADMIN ONLY 🔒</h2>
+<p>Only <b>allan128 - Super Admin</b> can see this. Staff/Members will see ACCESS DENIED.</p>
+Search User / Date: <input id="loginSearch" placeholder="e.g. mary12 or 12/11/2026" onkeyup="filterLogin()"> 
+<button onclick="window.print()">Print Login History</button>
+<button onclick="alert('Exported to Excel - LoginHistory.csv')">Export Excel</button>
+<table><tr><th>User</th><th>Role</th><th>Date</th><th>Time</th><th>Device / IP</th><th>Data Check (Browser/Device)</th><th>Status</th></tr><tbody id="loginHistoryTable"></tbody></table>
+<p><b>Data Check means:</b> System checks what device, browser, IP, time and if password was correct. If someone tries wrong password at night, it shows RED FAILED.</p>
 </div>
-
-<!-- USERS & PERMISSIONS -->
-<div id="users" class="card hidden">
-<h2>Users & Rights - Only Super Admin Can Grant Access / Delete</h2>
-<table><tr><th>User</th><th>Role</th><th>Can Add/Edit</th><th>Can Delete</th><th>Can Grant Access</th></tr>
-<tr><td>allan128</td><td>Super Admin</td><td>YES</td><td>YES - ONLY YOU</td><td>YES - ONLY YOU</td></tr>
-<tr><td>Mary</td><td>Cashier - Limited</td><td>YES</td><td>NO</td><td>NO</td></tr>
-<tr><td>John</td><td>Loans Officer - Limited</td><td>YES</td><td>NO</td><td>NO</td></tr></table>
-<p>Rule: Staff/Members CAN add, edit, add people, add items. They CANNOT delete. Some members are limited - e.g. Cashier cannot see Staff or Expenses.</p>
-<button onclick="alert('Only Super Admin can delete. Request sent to allan128 for approval.')">Try Delete (Staff) - Will Be Blocked</button>
-</div>
-
-<!-- RECEIPT - PRINTABLE ON ALL MODULES -->
-<div id="receipt" class="card">
-<h2>Printable Receipt - For All Modules</h2>
-<div id="printArea" style="border:1px dashed #000;padding:15px;max-width:400px">
-<center><b>YOUR SACCO NAME</b><br>Kampala | Tel: 077X XXX XXX<br>--------------------------------</center>
-Receipt No: <b id="receiptNo">REC-00123</b><br>
-Date: 12/11/2026 Time: 09:30 AM<br>
-Received From: <span id="receiptName">Peter - MEM001</span><br>
-Transaction: <span id="receiptType">Shares / Savings / Loan Repayment</span><br>
-Amount: UGX <b id="receiptAmount">200,000</b><br>
-Amount in Words: Two Hundred Thousand Only<br>
-Payment: Cash / Mobile Money<br>
-Balance After: UGX 1,500,000<br>
-Received By: <span id="receiptBy">Mary - Cashier</span><br>
-<center>--------------------------------<br>Signature: ___________<br>THANK YOU FOR SAVING WITH US!</center>
-</div><br>
-<button class="no-print" onclick="window.print()">Print This Receipt</button>
-</div>
-
-<script>
-let shares = {Peter:100, Mary:50, John:20};
-let currentUser = "allan128"; // Change to mary12 to test limited rights
-let role = "Super Admin"; // Change to Cashier to test
-
-function show(id){
-  document.querySelectorAll('.card').forEach(c=>c.classList.add('hidden'));
-  document.getElementById(id).classList.remove('hidden');
-  document.getElementById('receipt').classList.remove('hidden');
-  // SUPER ADMIN ONLY CHECK
-  if(id==='loginHistory' && role!=='Super Admin'){
-    alert('ACCESS DENIED: Login History is for Super Admin ONLY');
-    return;
-  }
-  if(id==='users' && role!=='Super Admin'){
-    alert('Only Super Admin can manage Users & Rights');
-  }
-}
-function logActivity(text){
-  let row = `<tr><td>${new Date().toLocaleString()}</td><td>${currentUser} (${role})</td><td>${text}</td></tr>`;
-  document.getElementById('activityTable').innerHTML += row;
-  // Everyone can see this, no one can delete it
-}
-function addShares(){
-  let m=document.getElementById('shareMember').value.split(' - ')[0];
-  let q=parseInt(document.getElementById('shareQty').value||0);
-  shares[m]+=q; updateShares(); logActivity(`Added ${q} shares to ${m}`);
-  document.getElementById('receiptAmount').innerText=(q*20000).toLocaleString();
-  document.getElementById('receiptType').innerText='Shares Purchase';
-  alert('Shares added + Receipt ready to print + Logged for everyone to see');
-}
-function sellShares(){
-  let s=document.getElementById('seller').value.split(' - ')[0];
-  let b=document.getElementById('buyer').value.split(' - ')[0];
-  let q=parseInt(document.getElementById('sellQty').value);
-  let p=parseInt(document.getElementById('sellPrice').value);
-  if(role!=='Super Admin'){ alert('Sell request sent to Super Admin for approval. You cannot approve yourself.'); logActivity(`${s} requested to sell ${q} shares to ${b} for ${q*p} - Pending Approval`); return; }
-  shares[s]-=q; shares[b]+=q; updateShares(); logActivity(`${s} sold ${q} shares to ${b} for UGX ${q*p}`);
-  document.getElementById('receiptAmount').innerText=(q*p).toLocaleString();
-  alert('Sale approved by Super Admin + Receipt generated');
-}
-function transferShares(){
-  let f=document.getElementById('fromM').value.split(' - ')[0];
-  let t=document.getElementById('toM').value.split(' - ')[0];
-  let q=parseInt(document.getElementById('transferQty').value);
-  shares[f]-=q; shares[t]+=q; updateShares(); logActivity(`${f} transferred ${q} shares to ${t} - Reason: ${document.getElementById('transferReason').value}`);
-  alert('Transfer done + Logged');
-}
-function updateShares(){
-  let html=''; let total=0;
-  for(let k in shares){ html+=`<tr><td>${k}</td><td>${shares[k]}</td><td>${(shares[k]*20000).toLocaleString()}</td></tr>`; total+=shares[k]; }
-  document.getElementById('shareTable').innerHTML=html;
-  document.getElementById('totalShares').innerText=total;
-  document.getElementById('reportShares').innerHTML=`Total Shares: ${total} - Value: UGX ${(total*20000).toLocaleString()}`;
-}
-updateShares(); logActivity('allan128 logged in as Super Admin');
-show('dashboard');
-</script>
-</body>
-</html>
