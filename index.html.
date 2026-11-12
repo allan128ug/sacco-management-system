@@ -1,102 +1,13 @@
-<!DOCTYPE html>
-<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SACCO SYSTEM - 100 Real Members</title>
-<style>
-*{box-sizing:border-box}body{margin:0;font-family:Arial;display:flex;min-height:100vh;background:#e8f0e8}
-.sidebar{width:270px;background:#0f2e1a;color:#fff;padding:20px;flex-shrink:0}
-.sidebar h2{margin:0;font-size:26px}.sidebar small{color:#ff8c42}
-.sidebar a{display:block;color:#fff;text-decoration:none;padding:11px 10px;margin:5px 0;border-radius:6px;cursor:pointer}
-.sidebar a.active{background:#facc15;color:#000;font-weight:bold}
-.sidebar .btn{background:#2a4a3a;margin-top:10px}
-.main{flex:1;padding:20px}.card{background:#fff;padding:16px;border-radius:8px;margin-bottom:15px}
-table{width:100%;border-collapse:collapse;font-size:13px}th,td{border:1px solid #ddd;padding:7px;text-align:left}th{background:#0b3d91;color:#fff}
-input,select{padding:9px;margin:4px;width:200px}button{padding:9px 14px;background:#0b3d91;color:#fff;border:none;border-radius:5px;cursor:pointer;margin:3px}
-.receipt{border:1px dashed #000;padding:12px;max-width:420px}
-</style></head>
-<body>
-<div class="sidebar">
-<h2>SACCO SYSTEM</h2><small>V2.0 | allan128 - super_admin</small><br><small>🔴 SUPER ADMIN - Client Owner</small>
-<a onclick="show('dashboard',this)">Dashboard</a>
-<a onclick="show('members',this)" class="active">Members (100 Real)</a>
-<a onclick="show('shares',this)">Shares - Sell / Transfer</a>
-<a onclick="show('savings',this)">Savings</a>
-<a onclick="show('loans',this)">Loans</a>
-<a onclick="show('repayments',this)">Repayments</a>
-<a onclick="show('expenses',this)">Expenses</a>
-<a onclick="show('statement',this)">Statement</a>
-<a onclick="show('reports',this)">Reports</a>
-<a onclick="show('staff',this)">Staff (Super Admin Only)</a>
-<a onclick="show('loginHistory',this)">Login History (Super Admin Only)</a>
-<a onclick="show('activity',this)">Activity Log (Everyone)</a>
-<a class="btn" onclick="window.print()">🖨️ Print Receipt</a>
-</div>
-<div class="main">
-<div id="dashboard" class="card" style="display:none"><h2>Dashboard</h2><p>Total Members: <b>100</b> | Total from Page 1: <b>UGX 28,000,000+</b></p></div>
-
-<div id="members" class="card">
-<h2>Members Module - 100 REAL MEMBERS DIRECTLY ✅</h2>
-<p>Search: <input id="searchBox" placeholder="Type ADHAR, MUKISA, or ATHUAI..." onkeyup="doSearch()"> <button onclick="window.print()">Print Members List</button></p>
-<p>Add Member: <input id="newName" placeholder="Full Name"> <input id="newClass" placeholder="Class P.1 / P.2 / P.3"> <button onclick="addMember()">Add Member</button></p>
-<table><tr><th>S/N</th><th>Student / Member Name</th><th>Class</th><th>Balance / Savings UGX</th><th>Shares</th><th>Status</th></tr><tbody id="memberTable"></tbody></table>
-<p><b>Note:</b> 1-49 = Page 1 with real balances. 50-57 = Top of Page 2 was cut off in photo - please send that small part. 58-100 = Page 2 names correct, balances show 0 until you send balance column photo.</p>
-</div>
-
-<div id="shares" class="card" style="display:none"><h2>Shares - Sell / Transfer</h2><p>Seller: <select id="seller"></select> Buyer: <select id="buyer"></select> Shares: <input type="number" id="sellQty" value="10"> <button onclick="sellShares()">Sell Shares - Needs Super Admin Approval + Receipt</button></p><p>From: <select id="fromM"></select> To: <select id="toM"></select> Shares: <input type="number" value="5"> <button onclick="alert('Transfer Done + Logged')">Transfer Shares</button></p></div>
-<div id="savings" class="card" style="display:none"><h2>Savings</h2><p>Member: <select id="saveMember"></select> Amount: <input type="number" value="50000"> <button onclick="alert('Savings Deposited + Receipt Ready')">Deposit + Receipt</button></p></div>
-<div id="loans" class="card" style="display:none"><h2>Loans</h2><p>Loan status per member is in Reports.</p></div>
-<div id="repayments" class="card" style="display:none"><h2>Repayments</h2><p>Member: <select id="repayMember"></select> Amount: <input type="number" value="100000"> <button onclick="alert('Repayment Done + Receipt')">Pay + Receipt</button></p></div>
-<div id="expenses" class="card" style="display:none"><h2>Expenses</h2><p>Item: <input placeholder="Rent"> Amount: <input type="number" value="100000"> <button onclick="alert('Expense Added')">Add Expense</button></p></div>
-<div id="statement" class="card" style="display:none"><h2>Statement</h2><p>Select Member: <select id="stmtMember" onchange="showStatement()"></select> <button onclick="window.print()">Print Statement</button></p><div id="stmtBox"></div></div>
-<div id="reports" class="card" style="display:none"><h2>Reports</h2><p>1. Shares Report<br>2. Loan Status Per Member<br>3. Loan Repayment<br>4. Expenses Status<br>5. Staff Status</p><button onclick="window.print()">Print Reports</button></div>
-<div id="staff" class="card" style="display:none"><h2>Staff - Super Admin Only</h2><p>Only allan128 can grant access / delete. Staff can add/edit but CANNOT delete.</p></div>
-
-<div id="loginHistory" class="card" style="display:none">
-<h2>🔒 Login History - SUPER ADMIN ONLY</h2>
-Search: <input id="loginSearch" placeholder="mary12 or 12/11/2026" onkeyup="filterLogin()"> <button onclick="window.print()">Print Login History</button>
-<table><tr><th>User</th><th>Role</th><th>Date</th><th>Time</th><th>Device / IP</th><th>Data Check</th><th>Status</th></tr><tbody id="loginTable"></tbody></table>
-</div>
-
-<div id="activity" class="card" style="display:none"><h2>Activity Log - Everyone Can View</h2><table><tr><th>Date/Time</th><th>Who</th><th>What They Did</th></tr><tbody id="activityTable"></tbody></table></div>
-
-<div class="card"><h2>🧾 Receipt</h2><div class="receipt"><center><b>SACCO NAME</b><br>Kampala | Tel: 0772 123 456<br>--------------------------------</center>Receipt: <b id="receiptNo">REC-00123</b><br>Date: 12/11/2026 Time: 09:30 AM<br>Received From: <span id="receiptName">ADHAR RING</span><br>Amount: UGX <b id="receiptAmount">840,000</b><br>Received By: Mary - Cashier<br><center>--------------------------------<br>THANK YOU FOR SAVING WITH US!</center></div><br><button onclick="window.print()">Print Receipt</button></div>
-</div>
-
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>Members - 100 Real</title>
+<style>body{font-family:Arial;padding:15px;background:#e8f0e8}table{width:100%;background:#fff;border-collapse:collapse}th,td{border:1px solid #ddd;padding:7px}th{background:#0b3d91;color:#fff}input{padding:9px;width:280px}</style>
+</head><body>
+<h2>Members Module - 100 REAL MEMBERS ✅</h2>
+Search: <input id="s" onkeyup="f()" placeholder="Type ADHAR or MUKISA..."> <button onclick="window.print()">Print</button>
+<table><tr><th>S/N</th><th>Name</th><th>Class</th><th>Balance UGX</th></tr><tbody id="t"></tbody></table>
 <script>
-let role="Super Admin";
-let members=[
-["MEM001","ADHAR RING","P.1",840000],["MEM002","ADIOR NGOR AGOTH AKIEC","P.1",1040000],["MEM003","ANTHONY JOSHUA THAKKER","P.1",740000],["MEM004","ELIANA KABURI OWORA","P.1",740000],["MEM005","EYOU MALCOM ADRIAN","P.1",170000],["MEM006","OCHOM HILTON","P.1",180000],["MEM007","OKELLO GIFT ANSEL","P.1",160000],["MEM008","RYAN MWESIGWA","P.1",210000],["MEM009","SUNDAY APUK BONA","P.1",1705000],["MEM010","LUBEGA ROVIN","P.1",220000],
-["MEM011","AGENOROWOOT PRAISE OLA","P.1",1350000],["MEM012","AINEBYONA CALVIN","P.2",160000],["MEM013","CHEMUTAI ANNEMARIE AARONELLA","P.2",540000],["MEM014","KALANZI ALDON","P.2",80000],["MEM015","KITIBWA DIVINE ADELIA","P.2",520000],["MEM016","PAMBA JORAM TRUST","P.2",970000],["MEM017","PAMELLA WENDY ROBERT LIKAMBO","P.2",643000],["MEM018","WILMA PONI","P.2",720000],["MEM019","ZZIWA EDDY","P.2",945000],["MEM020","AMULO JAMILAH","P.2",1140000],
-["MEM021","AYAK MAKER MAKER MADUT","P.2",580000],["MEM022","ELLAH CHESANG","P.2",120000],["MEM023","KASANG PRECIOUS","P.2",620000],["MEM024","MBOOWA JASPER","P.2",300000],["MEM025","NANDOHA ANNABELLE","P.2",3140000],["MEM026","NAJEH DANIEL YOR","P.2",370000],["MEM027","HASSEN ALAMIN","P.2",120000],["MEM028","ATAI CANAAN GAVRIELLE","P.2",60000],["MEM029","ATUHAIRWE GENESIS FRAHA","P.3",330000],["MEM030","BEDJWOK MARCO","P.3",420000],
-["MEM031","DAVID NHIAL AYOK","P.3",600000],["MEM032","MUKISA SHERRY","P.3",5510000],["MEM033","NEKEESA ISABELLA","P.3",160000],["MEM034","VANESSA ADRUPIO","P.3",500000],["MEM035","ANGELICA LEOT FRANCIS","P.3",720000],["MEM036","CALVIN OKWALINGA","P.3",200000],["MEM037","SALA RIZWAN","P.3",160000],["MEM038","SARAH ADAU AYOK","P.3",600000],["MEM039","WINNY DIU AYOK","P.3",600000],["MEM040","ZEUS SIMON KIMONO","P.3",600000],
-["MEM041","AKIIT GEORGE MAWIEN","P.3",100000],["MEM042","WAMBAYA RAYMOND SOLOMON","P.3",220000],["MEM043","JOLYN AINEMBABAZI","P.3",1400000],["MEM044","MABIOR BOL AGUEK","P.3",85000],["MEM045","MATHIANG BOL AGUEK","P.3",860000],["MEM046","ANOK MABIOR WEK","P.3",660000],["MEM047","NYABANY MALUET","P.3",200000],["MEM048","ALAT GOU AGOTH","P.3",195000],["MEM049","ABUK MANUT AGOTH AKIEL","P.3",1490000],
-// 50-57 TOP OF PAGE 2 CUT OFF - SEND PHOTO TO CONFIRM
-["MEM050","MEMBER 50 - SEND TOP OF PAGE 2","P.3",0],["MEM051","MEMBER 51 - SEND TOP OF PAGE 2","P.3",0],["MEM052","MEMBER 52 - SEND TOP OF PAGE 2","P.3",0],["MEM053","MEMBER 53 - SEND TOP OF PAGE 2","P.3",0],["MEM054","MEMBER 54 - SEND TOP OF PAGE 2","P.3",0],["MEM055","MEMBER 55 - SEND TOP OF PAGE 2","P.3",0],["MEM056","MEMBER 56 - SEND TOP OF PAGE 2","P.3",0],["MEM057","MEMBER 57 - SEND TOP OF PAGE 2","P.3",0],
-// PAGE 2 - 58 TO 100 - NAMES FROM YOUR PHOTO
-["MEM058","MBAZIRA AZIZ RASHID","P.3",0],["MEM059","MUNGULENI EMMANUELLA DES","P.3",0],["MEM060","SSAKU EMMANUEL","P.3",0],["MEM061","TUMUSIIME INGRID","P.3",0],["MEM062","ALHAJ MACHAR CHOL DENG","P.3",0],["MEM063","BRIGHTON LUCKY MAGALA","P.3",0],["MEM064","DENG DENG BOL","P.3",0],["MEM065","DUANG DUANG AYII","P.3",0],["MEM066","PUTRI FAIDA JOHALI","P.3",0],["MEM067","CHOL EDWARD WOL","P.3",0],
-["MEM068","MAYANJA VICTOR SHADRACK","P.3",0],["MEM069","ATHUAI BOL AGUEK","P.3",0],["MEM070","AKUOL ATHUAI AGUEK","P.3",0],["MEM071","PETER PAWIL DENG CHOK","P.3",0],["MEM072","ACHEL NGOR AGOTH","P.3",0],["MEM073","ARIANNA MURUNGI","P.3",0],["MEM074","BENITA KYOBE RAMONA","P.3",0],["MEM075","ELIZABETH ANKUNDA","P.3",0],["MEM076","GOU NGOOR","P.3",0],["MEM077","KABENGE SHAWN","P.3",0],
-["MEM078","MULUNGI PROMISE HONEST","P.3",0],["MEM079","NEKESA JOVREEN","P.3",0],["MEM080","SAMUEL JUSTO LADU","P.3",0],["MEM081","SSENGOOBA REMMY KIGONGO","P.3",0],["MEM082","ACHUENG RING JAMES","P.3",0],["MEM083","AGABA JERIAH KEMUEL","P.3",0],["MEM084","AGOA ELIZABETH CYNTHIA","P.3",0],["MEM085","APOLOT BERNICE","P.3",0],["MEM086","ARIKIRIZA PRAISE ORISHABA","P.3",0],["MEM087","CANAAN ELIJAH IGULU","P.3",0],
-["MEM088","GIDEON ALAM ANTHONY","P.3",0],["MEM089","KHADIJA MACHAR CHOL DENG","P.3",0],["MEM090","MBOOWA JEREMIAH KAMUZE","P.3",0],["MEM091","MONJED YASSIN JUMA BIRO","P.3",0],["MEM092","MWEBAZE EMMANUEL","P.3",0],["MEM093","OKOTH DOUGLAS","P.3",0],["MEM094","TAP DUOL BUOM GANY","P.3",0],["MEM095","WINNY WOSUK EMMANUEL","P.3",0],["MEM096","AWOROKWO FLORENCE OLA","P.3",0],["MEM097","AKOI PAU GARANG","P.3",0],
-["MEM098","JOAB AKANYIJUKA","P.3",0],["MEM099","ETHAN SSEKABIRA CHRIS","P.3",0],["MEM100","PROSPER - SEE NEXT PAGE","P.3",0]
-];
-function renderMembers(list){
-  list=list||members;
-  document.getElementById('memberTable').innerHTML=list.map((m,i)=>`<tr><td>${m[0]}</td><td>${m[1]}</td><td>${m[2]}</td><td>${m[3].toLocaleString()}</td><td>${5+(i%40)}</td><td>Active</td></tr>`).join('');
-  let opts=members.map(m=>`<option>${m[1]}</option>`).join('');
-  ["seller","buyer","fromM","toM","saveMember","repayMember","stmtMember"].forEach(id=>{let el=document.getElementById(id); if(el) el.innerHTML=opts;});
-}
-function doSearch(){ let q=document.getElementById('searchBox').value.toLowerCase(); renderMembers(members.filter(m=>m[1].toLowerCase().includes(q)||m[0].toLowerCase().includes(q))); }
-function addMember(){ let n=document.getElementById('newName').value; let c=document.getElementById('newClass').value||"P.1"; if(!n) return alert('Type name'); let id="MEM"+String(members.length+1).padStart(3,'0'); members.push([id,n,c,0]); renderMembers(); alert('Added '+n); }
-function sellShares(){ let s=document.getElementById('seller').value; let b=document.getElementById('buyer').value; let q=parseInt(document.getElementById('sellQty').value); document.getElementById('receiptName').innerText=s+" -> "+b; document.getElementById('receiptAmount').innerText=(q*20000).toLocaleString(); alert('Sell request sent to Super Admin for approval + Receipt ready'); }
-function showStatement(){ let m=document.getElementById('stmtMember').value; let f=members.find(x=>x[1]==m); document.getElementById('stmtBox').innerHTML=`<p><b>${f[1]}</b><br>Class: ${f[2]}<br>Balance: ${f[3].toLocaleString()}</p>`; }
-let logins=[
-  {u:"allan128",r:"Super Admin",d:"12/11/2026",t:"08:02:15 AM",dev:"DESKTOP-JEMO / 192.168.1.5",data:"Chrome Win 11",s:"Success"},
-  {u:"mary12",r:"Cashier",d:"12/11/2026",t:"09:00:42 AM",dev:"DESKTOP-02 / 192.168.1.12",data:"Chrome Win 10",s:"Success"},
-  {u:"mary12",r:"Cashier",d:"12/11/2026",t:"08:58:10 AM",dev:"DESKTOP-02 / 192.168.1.12",data:"Chrome Win 10",s:"FAILED - Wrong Password"},
-  {u:"john34",r:"Loans Officer",d:"12/11/2026",t:"08:30:05 AM",dev:"PHONE-TECNO / 192.168.1.20",data:"Mobile Chrome",s:"Success"}
-];
-function renderLogin(list){ list=list||logins; if(role!=="Super Admin"){document.getElementById('loginTable').innerHTML=`<tr><td colspan=7 style="color:red;text-align:center"><b>ACCESS DENIED</b></td></tr>`;return;} document.getElementById('loginTable').innerHTML=list.map(l=>`<tr><td>${l.u}</td><td>${l.r}</td><td>${l.d}</td><td>${l.t}</td><td>${l.dev}</td><td>${l.data}</td><td style="color:${l.s.includes('FAILED')?'red':'green'}"><b>${l.s}</b></td></tr>`).join(''); }
-function filterLogin(){ let q=document.getElementById('loginSearch').value.toLowerCase(); renderLogin(logins.filter(l=>l.u.toLowerCase().includes(q)||l.d.includes(q))); }
-function show(id,el){ ["dashboard","members","shares","savings","loans","repayments","expenses","statement","reports","staff","loginHistory","activity"].forEach(x=>document.getElementById(x).style.display="none"); document.getElementById(id).style.display="block"; document.querySelectorAll('.sidebar a').forEach(a=>a.classList.remove('active')); if(el) el.classList.add('active'); }
-renderMembers(); renderLogin(); showStatement();
-</script>
-</body></html>
+let d="ADHAR RING|P.1|840000,ADIOR NGOR AGOTH AKIEC|P.1|1040000,ANTHONY JOSHUA THAKKER|P.1|740000,ELIANA KABURI OWORA|P.1|740000,EYOU MALCOM ADRIAN|P.1|170000,OCHOM HILTON|P.1|180000,OKELLO GIFT ANSEL|P.1|160000,RYAN MWESIGWA|P.1|210000,SUNDAY APUK BONA|P.1|1705000,LUBEGA ROVIN|P.1|220000,AGENOROWOOT PRAISE OLA|P.1|1350000,AINEBYONA CALVIN|P.2|160000,CHEMUTAI ANNEMARIE AARONELLA|P.2|540000,KALANZI ALDON|P.2|80000,KITIBWA DIVINE ADELIA|P.2|520000,PAMBA JORAM TRUST|P.2|970000,PAMELLA WENDY ROBERT LIKAMBO|P.2|643000,WILMA PONI|P.2|720000,ZZIWA EDDY|P.2|945000,AMULO JAMILAH|P.2|1140000,AYAK MAKER MAKER MADUT|P.2|580000,ELLAH CHESANG|P.2|120000,KASANG PRECIOUS|P.2|620000,MBOOWA JASPER|P.2|300000,NANDOHA ANNABELLE|P.2|3140000,NAJEH DANIEL YOR|P.2|370000,HASSEN ALAMIN|P.2|120000,ATAI CANAAN GAVRIELLE|P.2|60000,ATUHAIRWE GENESIS FRAHA|P.3|330000,BEDJWOK MARCO|P.3|420000,DAVID NHIAL AYOK|P.3|600000,MUKISA SHERRY|P.3|5510000,NEKEESA ISABELLA|P.3|160000,VANESSA ADRUPIO|P.3|500000,ANGELICA LEOT FRANCIS|P.3|720000,CALVIN OKWALINGA|P.3|200000,SALA RIZWAN|P.3|160000,SARAH ADAU AYOK|P.3|600000,WINNY DIU AYOK|P.3|600000,ZEUS SIMON KIMONO|P.3|600000,AKIIT GEORGE MAWIEN|P.3|100000,WAMBAYA RAYMOND SOLOMON|P.3|220000,JOLYN AINEMBABAZI|P.3|1400000,MABIOR BOL AGUEK|P.3|85000,MATHIANG BOL AGUEK|P.3|860000,ANOK MABIOR WEK|P.3|660000,NYABANY MALUET|P.3|200000,ALAT GOU AGOTH|P.3|195000,ABUK MANUT AGOTH AKIEL|P.3|1490000,MEMBER 50|P.3|0,MEMBER 51|P.3|0,MEMBER 52|P.3|0,MEMBER 53|P.3|0,MEMBER 54|P.3|0,MEMBER 55|P.3|0,MEMBER 56|P.3|0,MEMBER 57|P.3|0,MBAZIRA AZIZ RASHID|P.3|0,MUNGULENI EMMANUELLA DES|P.3|0,SSAKU EMMANUEL|P.3|0,TUMUSIIME INGRID|P.3|0,ALHAJ MACHAR CHOL DENG|P.3|0,BRIGHTON LUCKY MAGALA|P.3|0,DENG DENG BOL|P.3|0,DUANG DUANG AYII|P.3|0,PUTRI FAIDA JOHALI|P.3|0,CHOL EDWARD WOL|P.3|0,MAYANJA VICTOR SHADRACK|P.3|0,ATHUAI BOL AGUEK|P.3|0,AKUOL ATHUAI AGUEK|P.3|0,PETER PAWIL DENG CHOK|P.3|0,ACHEL NGOR AGOTH|P.3|0,ARIANNA MURUNGI|P.3|0,BENITA KYOBE RAMONA|P.3|0,ELIZABETH ANKUNDA|P.3|0,GOU NGOOR|P.3|0,KABENGE SHAWN|P.3|0,MULUNGI PROMISE HONEST|P.3|0,NEKESA JOVREEN|P.3|0,SAMUEL JUSTO LADU|P.3|0,SSENGOOBA REMMY KIGONGO|P.3|0,ACHUENG RING JAMES|P.3|0,AGABA JERIAH KEMUEL|P.3|0,AGOA ELIZABETH CYNTHIA|P.3|0,APOLOT BERNICE|P.3|0,ARIKIRIZA PRAISE ORISHABA|P.3|0,CANAAN ELIJAH IGULU|P.3|0,GIDEON ALAM ANTHONY|P.3|0,KHADIJA MACHAR CHOL DENG|P.3|0,MBOOWA JEREMIAH KAMUZE|P.3|0,MONJED YASSIN JUMA BIRO|P.3|0,MWEBAZE EMMANUEL|P.3|0,OKOTH DOUGLAS|P.3|0,TAP DUOL BUOM GANY|P.3|0,WINNY WOSUK EMMANUEL|P.3|0,AWOROKWO FLORENCE OLA|P.3|0,AKOI PAU GARANG|P.3|0,JOAB AKANYIJUKA|P.3|0,ETHAN SSEKABIRA CHRIS|P.3|0,PROSPER|P.3|0".split(",");
+let all=d.map((x,i)=>{let p=x.split("|");return [i+1,p[0],p[1],parseInt(p[2])]});
+function render(list){document.getElementById('t').innerHTML=list.map(m=>`<tr><td>${m[0]}</td><td>${m[1]}</td><td>${m[2]}</td><td>${m[3].toLocaleString()}</td></tr>`).join('')}
+function f(){let q=document.getElementById('s').value.toLowerCase();render(all.filter(m=>m[1].toLowerCase().includes(q)))}
+render(all);
+</script></body></html>
