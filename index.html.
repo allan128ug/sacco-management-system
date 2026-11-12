@@ -1,104 +1,86 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SACCO SYSTEM V2.0 - 100 Members</title>
+<style>
+body{font-family:Arial;background:#f2f2f2;margin:0;padding:0}
+header{background:#0b3d91;color:#fff;padding:15px;text-align:center}
+nav{background:#fff;padding:10px;text-align:center;position:sticky;top:0}
+button{padding:10px 14px;margin:3px;background:#0b3d91;color:#fff;border:none;border-radius:5px;cursor:pointer}
+.card{background:#fff;margin:12px;padding:15px;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{border:1px solid #ddd;padding:7px;text-align:left}
+th{background:#0b3d91;color:#fff}
+input{padding:8px;margin:5px}
+</style></head>
+<body>
+<header><h2>SACCO SYSTEM V2.0</h2><p>Logged in: allan128 - SUPER ADMIN | Total Members: <span id="totalTop">100</span></p></header>
+<nav>
+<button onclick="show('members')">Members (100)</button>
+<button onclick="show('loginHistory')">Login History - Super Admin Only</button>
+<button onclick="show('shares')">Shares Sell/Transfer</button>
+<button onclick="window.print()">Print Receipt</button>
+</nav>
 
-<!-- PASTE THIS INSIDE YOUR <script> - REPLACES OLD SCRIPT -->
+<!-- MEMBERS - VISIBLE BY DEFAULT -->
+<div id="members" class="card">
+<h2>✅ 100 Members Loaded Directly</h2>
+Search: <input id="searchBox" placeholder="Type MEM001 or Peter..." onkeyup="filterMembers()">
+<table><tr><th>ID</th><th>Name</th><th>Phone</th><th>Shares</th><th>Savings UGX</th><th>Loan UGX</th><th>Status</th></tr><tbody id="memberTable"></tbody></table>
+</div>
+
+<!-- LOGIN HISTORY -->
+<div id="loginHistory" class="card" style="display:none">
+<h2>🔒 Login History - SUPER ADMIN ONLY</h2>
+<p>Only allan128 can see this. If you are Cashier, you will see ACCESS DENIED.</p>
+Search: <input id="loginSearch" placeholder="mary12 or 12/11/2026" onkeyup="filterLogin()">
+<table><tr><th>User</th><th>Role</th><th>Date</th><th>Time</th><th>Device / IP</th><th>Data Check</th><th>Status</th></tr><tbody id="loginTable"></tbody></table>
+</div>
+
+<!-- SHARES -->
+<div id="shares" class="card" style="display:none">
+<h2>Shares - Sell / Transfer</h2>
+<p>Seller: <select id="seller"><option>Peter Kato</option><option>Mary Nakato</option></select> Buyer: <select id="buyer"><option>Mary Nakato</option><option>John Mukasa</option></select> Shares: <input type="number" id="sellQty" value="10"> <button onclick="alert('Sell request sent to Super Admin for approval + Receipt ready')">Sell Shares</button></p>
+<p>From: <select><option>Peter Kato</option></select> To: <select><option>John Mukasa</option></select> Shares: <input type="number" value="5"> <button onclick="alert('Transfer Done + Logged for everyone')">Transfer Shares</button></p>
+<div style="border:1px dashed #000;padding:10px;max-width:400px"><b>RECEIPT REC-00123</b><br>Date: 12/11/2026<br>From: Peter Kato<br>Amount: UGX 200,000<br>Thank you for saving with us!</div>
+</div>
 
 <script>
-// ===== 100 MEMBERS AUTO-GENERATED =====
-let firstNames = ["Peter","Mary","John","Grace","David","Sarah","Moses","Ruth","James","Esther","Paul","Rebecca","Daniel","Joyce","Samuel","Hannah","Joseph","Martha","Isaac","Naomi","Jacob","Lydia","Emmanuel","Faith","Joshua","Priscilla","Michael","Deborah","Aaron","Miriam","Timothy","Rachael","Stephen","Phoebe","Andrew","Betty","Thomas","Christine","Philip","Agnes","Simon","Florence","Mark","Annet","Luke","Violet","Matthew","Dorcus","Benjamin","Sharon","Charles","Immaculate","Robert","Prossy","George","Teddy","Henry","Harriet","Richard","Jane","Edward","Margaret","William","Allen","Francis","Winnie","Kenneth","Carol","Albert","Sandra","Martin","Pamela","Victor","Brenda","Brian","Gloria","Collins","Doreen","Denis","Catherine","Alex","Irene","Patrick","Joan","Ivan","Resty","Hassan","Amina","Ali","Fatuma","Musa","Zainab","Isaac","Kevin","Derrick","Patricia","Ronald","Jackline"];
-let lastNames = ["Kato","Nakato","Mukasa","Nalubega","Ssemwanga","Nabukenya","Okello","Achieng","Mugisha","Atim","Kizito","Nansubuga","Otim","Akello","Wasswa","Babirye","Ssali","Nalwoga","Kiprop","Chebet","Mbabazi","Tumusiime","Kagwa","Namukasa","Byaruhanga","Nakiyingi","Onyango","Adongo","Mwesigye","Nakigudde","Ssenyonga","Auma","Kintu","Nabirye","Mugerwa","Nakazzi","Lubega","Nantongo","Ssebuguzi","Kyomuhendo","Nalule","Ssempala","Nakato","Opio","Achan","Kizza","Nalwanga","Muwanga","Namaganda","Tumwebaze"];
-let members = [];
+let role = "Super Admin"; // Change to "Cashier" to test blocking
+let firstNames=["Peter","Mary","John","Grace","David","Sarah","Moses","Ruth","James","Esther","Paul","Rebecca","Daniel","Joyce","Samuel","Hannah","Joseph","Martha","Isaac","Naomi","Jacob","Lydia","Emmanuel","Faith","Joshua","Priscilla","Michael","Deborah","Aaron","Miriam","Timothy","Rachael","Stephen","Phoebe","Andrew","Betty","Thomas","Christine","Philip","Agnes","Simon","Florence","Mark","Annet","Luke","Violet","Matthew","Dorcus","Benjamin","Sharon","Charles","Immaculate","Robert","Prossy","George","Teddy","Henry","Harriet","Richard","Jane","Edward","Margaret","William","Allen","Francis","Winnie","Kenneth","Carol","Albert","Sandra","Martin","Pamela","Victor","Brenda","Brian","Gloria","Collins","Doreen","Denis","Catherine","Alex","Irene","Patrick","Joan","Ivan","Resty","Hassan","Amina","Ali","Fatuma","Musa","Zainab","Kevin","Derrick","Patricia","Ronald","Jackline"];
+let lastNames=["Kato","Nakato","Mukasa","Nalubega","Ssemwanga","Nabukenya","Okello","Achieng","Mugisha","Atim","Kizito","Nansubuga","Otim","Akello","Wasswa","Babirye","Ssali","Nalwoga","Kiprop","Chebet"];
+let members=[];
 for(let i=1;i<=100;i++){
-  let fn = firstNames[(i-1)%firstNames.length];
-  let ln = lastNames[(i-1)%lastNames.length];
-  members.push({
-    id: "MEM"+String(i).padStart(3,'0'),
-    name: fn+" "+ln,
-    phone: "07"+Math.floor(10000000+Math.random()*89999999),
-    shares: Math.floor(Math.random()*50)+5,
-    savings: Math.floor(Math.random()*1000000)+50000,
-    loan: i%3==0 ? 500000 : 0,
-    paid: i%3==0 ? 200000 : 0,
-    role: i==1 ? "Super Admin" : i<=5 ? "Staff" : "Member",
-    status: "Active"
-  });
+  members.push({id:"MEM"+String(i).padStart(3,'0'), name:firstNames[(i-1)%firstNames.length]+" "+lastNames[(i-1)%lastNames.length], phone:"07"+(70000000+i*12345)%90000000, shares:5+(i%50), savings:50000+(i*15000), loan: i%3==0?500000:0, status:"Active"});
 }
-
-// SHOW 100 MEMBERS IN TABLE
-function renderMembers(){
-  let html = "";
-  members.forEach(m=>{
-    html+=`<tr><td>${m.id}</td><td>${m.name}</td><td>${m.phone}</td><td>${m.shares}</td><td>${m.savings.toLocaleString()}</td><td>${m.loan.toLocaleString()}</td><td>${m.status}</td><td><button onclick="viewMember('${m.id}')">View</button></td></tr>`;
-  });
-  document.getElementById('memberTable').innerHTML = html;
-  document.getElementById('totalMembers').innerText = members.length;
+function renderMembers(list){
+  list=list||members;
+  document.getElementById('memberTable').innerHTML=list.map(m=>`<tr><td>${m.id}</td><td>${m.name}</td><td>${m.phone}</td><td>${m.shares}</td><td>${m.savings.toLocaleString()}</td><td>${m.loan.toLocaleString()}</td><td>${m.status}</td></tr>`).join('');
+  document.getElementById('totalTop').innerText=members.length;
 }
-function viewMember(id){
-  let m = members.find(x=>x.id==id);
-  alert(`Member: ${m.name}\nID: ${m.id}\nPhone: ${m.phone}\nShares: ${m.shares}\nSavings: ${m.savings}\nLoan: ${m.loan}`);
-  logActivity(`Viewed member ${m.name} (${m.id})`);
+function filterMembers(){
+  let q=document.getElementById('searchBox').value.toLowerCase();
+  renderMembers(members.filter(m=>m.name.toLowerCase().includes(q)||m.id.toLowerCase().includes(q)));
 }
-
-// ===== LOGIN HISTORY - SUPER ADMIN ONLY =====
-let loginHistory = [
-  {user:"allan128", role:"Super Admin", date:"12/11/2026", time:"08:02:15 AM", device:"DESKTOP-JEMO / 192.168.1.5", data:"Chrome Windows 11", status:"Success"},
-  {user:"mary12", role:"Cashier", date:"12/11/2026", time:"09:00:42 AM", device:"DESKTOP-02 / 192.168.1.12", data:"Chrome Windows 10", status:"Success"},
-  {user:"mary12", role:"Cashier", date:"12/11/2026", time:"08:58:10 AM", device:"DESKTOP-02 / 192.168.1.12", data:"Chrome Windows 10", status:"FAILED - Wrong Password"},
-  {user:"john34", role:"Loans Officer", date:"12/11/2026", time:"08:30:05 AM", device:"PHONE-TECNO / 192.168.1.20", data:"Mobile Chrome", status:"Success"},
-  {user:"unknown", role:"Unknown", date:"11/11/2026", time:"11:15:00 PM", device:"UNKNOWN / 41.210.0.5", data:"Firefox", status:"FAILED - Unknown User"},
+let logins=[
+  {user:"allan128",role:"Super Admin",date:"12/11/2026",time:"08:02:15 AM",device:"DESKTOP-JEMO / 192.168.1.5",data:"Chrome Win11",status:"Success"},
+  {user:"mary12",role:"Cashier",date:"12/11/2026",time:"09:00:42 AM",device:"DESKTOP-02 / 192.168.1.12",data:"Chrome Win10",status:"Success"},
+  {user:"mary12",role:"Cashier",date:"12/11/2026",time:"08:58:10 AM",device:"DESKTOP-02 / 192.168.1.12",data:"Chrome Win10",status:"FAILED - Wrong Password"},
+  {user:"john34",role:"Loans Officer",date:"12/11/2026",time:"08:30:05 AM",device:"PHONE-TECNO / 192.168.1.20",data:"Mobile Chrome",status:"Success"},
+  {user:"unknown",role:"Unknown",date:"11/11/2026",time:"11:15 PM",device:"UNKNOWN / 41.210.0.5",data:"Firefox",status:"FAILED - Unknown User"}
 ];
-
-function renderLoginHistory(){
-  // ONLY SUPER ADMIN CAN SEE THIS
-  if(role!=="Super Admin"){
-    document.getElementById('loginHistoryTable').innerHTML = `<tr><td colspan="7" style="color:red;text-align:center"><b>ACCESS DENIED</b><br>Login History is for Super Admin ONLY (allan128)</td></tr>`;
-    return;
-  }
-  let html="";
-  loginHistory.forEach(l=>{
-    let color = l.status.includes("FAILED") ? "red" : "green";
-    html+=`<tr><td>${l.user}</td><td>${l.role}</td><td>${l.date}</td><td>${l.time}</td><td>${l.device}</td><td>${l.data}</td><td style="color:${color}"><b>${l.status}</b></td></tr>`;
-  });
-  document.getElementById('loginHistoryTable').innerHTML = html;
-}
-function addLoginAttempt(user, success){
-  let now = new Date();
-  loginHistory.unshift({
-    user:user, role:"Unknown", 
-    date: now.toLocaleDateString(), 
-    time: now.toLocaleTimeString(),
-    device: navigator.userAgent.substring(0,40)+" / IP: "+ "192.168.1."+Math.floor(Math.random()*50),
-    data: "Browser: "+navigator.platform+" - Data Check: "+ (success?"Login OK":"Login Failed"),
-    status: success?"Success":"FAILED - Wrong Password"
-  });
-  renderLoginHistory();
-  logActivity(`${user} tried to login - ${success?"Success":"Failed"}`);
+function renderLogins(list){
+  list=list||logins;
+  if(role!=="Super Admin"){ document.getElementById('loginTable').innerHTML=`<tr><td colspan=7 style="color:red;text-align:center"><b>ACCESS DENIED - Super Admin Only</b></td></tr>`; return; }
+  document.getElementById('loginTable').innerHTML=list.map(l=>`<tr><td>${l.user}</td><td>${l.role}</td><td>${l.date}</td><td>${l.time}</td><td>${l.device}</td><td>${l.data}</td><td style="color:${l.status.includes('FAILED')?'red':'green'}"><b>${l.status}</b></td></tr>`).join('');
 }
 function filterLogin(){
-  let q = document.getElementById('loginSearch').value.toLowerCase();
-  let rows = document.querySelectorAll('#loginHistoryTable tr');
-  // Simple filter - reload then filter
-  renderLoginHistory();
-  if(q){
-    let filtered = loginHistory.filter(l=>l.user.toLowerCase().includes(q) || l.date.includes(q));
-    let html="";
-    filtered.forEach(l=>{ html+=`<tr><td>${l.user}</td><td>${l.role}</td><td>${l.date}</td><td>${l.time}</td><td>${l.device}</td><td>${l.data}</td><td>${l.status}</td></tr>`; });
-    document.getElementById('loginHistoryTable').innerHTML = html;
-  }
+  let q=document.getElementById('loginSearch').value.toLowerCase();
+  renderLogins(logins.filter(l=>l.user.toLowerCase().includes(q)||l.date.includes(q)));
 }
-renderMembers(); renderLoginHistory();
-</script><!-- MEMBERS - 100 MEMBERS -->
-<div id="members" class="card">
-<h2>Members - 100 Members Loaded</h2>
-<p>Total: <b id="totalMembers">100</b> | Search: <input placeholder="Search name / MEM001" onkeyup="filterMembers(this.value)"></p>
-<table><tr><th>ID</th><th>Name</th><th>Phone</th><th>Shares</th><th>Savings</th><th>Loan</th><th>Status</th><th>Action</th></tr><tbody id="memberTable"></tbody></table>
-</div>
-
-<!-- LOGIN HISTORY - SUPER ADMIN ONLY -->
-<div id="loginHistory" class="card">
-<h2>Login History - SUPER ADMIN ONLY 🔒</h2>
-<p>Only <b>allan128 - Super Admin</b> can see this. Staff/Members will see ACCESS DENIED.</p>
-Search User / Date: <input id="loginSearch" placeholder="e.g. mary12 or 12/11/2026" onkeyup="filterLogin()"> 
-<button onclick="window.print()">Print Login History</button>
-<button onclick="alert('Exported to Excel - LoginHistory.csv')">Export Excel</button>
-<table><tr><th>User</th><th>Role</th><th>Date</th><th>Time</th><th>Device / IP</th><th>Data Check (Browser/Device)</th><th>Status</th></tr><tbody id="loginHistoryTable"></tbody></table>
-<p><b>Data Check means:</b> System checks what device, browser, IP, time and if password was correct. If someone tries wrong password at night, it shows RED FAILED.</p>
-</div>
+function show(id){
+  ['members','loginHistory','shares'].forEach(x=>document.getElementById(x).style.display='none');
+  document.getElementById(id).style.display='block';
+}
+renderMembers(); renderLogins();
+</script>
+</body></html>
