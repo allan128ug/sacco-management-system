@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SACCO SYSTEM V2.0 - 100 Members</title>
+<title>SACCO - 100 Members</title>
 <style>
-body{font-family:Arial;background:#f2f2f2;margin:0;padding:0}
+body{font-family:Arial;background:#f2f2f2;margin:0}
 header{background:#0b3d91;color:#fff;padding:15px;text-align:center}
 nav{background:#fff;padding:10px;text-align:center;position:sticky;top:0}
 button{padding:10px 14px;margin:3px;background:#0b3d91;color:#fff;border:none;border-radius:5px;cursor:pointer}
@@ -10,77 +10,94 @@ button{padding:10px 14px;margin:3px;background:#0b3d91;color:#fff;border:none;bo
 table{width:100%;border-collapse:collapse;font-size:14px}
 th,td{border:1px solid #ddd;padding:7px;text-align:left}
 th{background:#0b3d91;color:#fff}
-input{padding:8px;margin:5px}
+input{padding:8px;margin:5px;width:250px}
 </style></head>
 <body>
-<header><h2>SACCO SYSTEM V2.0</h2><p>Logged in: allan128 - SUPER ADMIN | Total Members: <span id="totalTop">100</span></p></header>
+<header><h2>SACCO SYSTEM V2.0</h2><p>Super Admin: allan128 | Members: 100</p></header>
 <nav>
-<button onclick="show('members')">Members (100)</button>
-<button onclick="show('loginHistory')">Login History - Super Admin Only</button>
-<button onclick="show('shares')">Shares Sell/Transfer</button>
-<button onclick="window.print()">Print Receipt</button>
+<button onclick="showPage('membersPage')">👥 MEMBERS (100)</button>
+<button onclick="showPage('loginPage')">🔒 LOGIN HISTORY - Super Admin Only</button>
+<button onclick="showPage('sharesPage')">📊 SHARES Sell / Transfer</button>
 </nav>
 
-<!-- MEMBERS - VISIBLE BY DEFAULT -->
-<div id="members" class="card">
-<h2>✅ 100 Members Loaded Directly</h2>
-Search: <input id="searchBox" placeholder="Type MEM001 or Peter..." onkeyup="filterMembers()">
-<table><tr><th>ID</th><th>Name</th><th>Phone</th><th>Shares</th><th>Savings UGX</th><th>Loan UGX</th><th>Status</th></tr><tbody id="memberTable"></tbody></table>
+<!-- MEMBERS MODULE -->
+<div id="membersPage" class="card">
+<h2>Members Module - 100 Different Members</h2>
+Search: <input id="searchBox" placeholder="Type e.g. Nakato or MEM045" onkeyup="doSearch()">
+<table><tr><th>ID</th><th>Full Name</th><th>Phone</th><th>Shares</th><th>Savings</th><th>Loan</th><th>Status</th></tr>
+<tbody id="memberTable"></tbody></table>
 </div>
 
-<!-- LOGIN HISTORY -->
-<div id="loginHistory" class="card" style="display:none">
-<h2>🔒 Login History - SUPER ADMIN ONLY</h2>
-<p>Only allan128 can see this. If you are Cashier, you will see ACCESS DENIED.</p>
-Search: <input id="loginSearch" placeholder="mary12 or 12/11/2026" onkeyup="filterLogin()">
-<table><tr><th>User</th><th>Role</th><th>Date</th><th>Time</th><th>Device / IP</th><th>Data Check</th><th>Status</th></tr><tbody id="loginTable"></tbody></table>
+<!-- LOGIN HISTORY MODULE -->
+<div id="loginPage" class="card" style="display:none">
+<h2>Login History Module - SUPER ADMIN ONLY</h2>
+<p>Only <b>allan128</b> can view this. Staff/Members see ACCESS DENIED.</p>
+Search: <input id="loginSearch" placeholder="Search mary12 or date 12/11/2026" onkeyup="filterLogin()">
+<button onclick="window.print()">🖨️ Print Login History</button>
+<table><tr><th>User</th><th>Role</th><th>Date</th><th>Time</th><th>Device / IP</th><th>Data Check</th><th>Status</th></tr>
+<tbody id="loginTable"></tbody></table>
+<p><b>Data Check:</b> System checks Device, Browser, IP, Time, and if password was correct. Failed attempts show in RED.</p>
 </div>
 
-<!-- SHARES -->
-<div id="shares" class="card" style="display:none">
+<!-- SHARES MODULE -->
+<div id="sharesPage" class="card" style="display:none">
 <h2>Shares - Sell / Transfer</h2>
-<p>Seller: <select id="seller"><option>Peter Kato</option><option>Mary Nakato</option></select> Buyer: <select id="buyer"><option>Mary Nakato</option><option>John Mukasa</option></select> Shares: <input type="number" id="sellQty" value="10"> <button onclick="alert('Sell request sent to Super Admin for approval + Receipt ready')">Sell Shares</button></p>
-<p>From: <select><option>Peter Kato</option></select> To: <select><option>John Mukasa</option></select> Shares: <input type="number" value="5"> <button onclick="alert('Transfer Done + Logged for everyone')">Transfer Shares</button></p>
-<div style="border:1px dashed #000;padding:10px;max-width:400px"><b>RECEIPT REC-00123</b><br>Date: 12/11/2026<br>From: Peter Kato<br>Amount: UGX 200,000<br>Thank you for saving with us!</div>
+<p>Sell: Peter Kato → Mary Nakato, 10 Shares @ 20,000 = 200,000 <button onclick="alert('Sell request sent to Super Admin + Receipt Ready')">Sell Shares</button></p>
+<p>Transfer: John Mukasa → Grace Nalubega, 5 Shares <button onclick="alert('Transfer Done + Logged')">Transfer Shares</button></p>
+<div style="border:1px dashed #000;padding:10px;max-width:400px"><b>RECEIPT REC-00123</b><br>Date: 12/11/2026 Time: 09:30 AM<br>Received From: Peter Kato<br>Amount: UGX 200,000<br><button onclick="window.print()">Print Receipt</button></div>
 </div>
 
 <script>
-let role = "Super Admin"; // Change to "Cashier" to test blocking
-let firstNames=["Peter","Mary","John","Grace","David","Sarah","Moses","Ruth","James","Esther","Paul","Rebecca","Daniel","Joyce","Samuel","Hannah","Joseph","Martha","Isaac","Naomi","Jacob","Lydia","Emmanuel","Faith","Joshua","Priscilla","Michael","Deborah","Aaron","Miriam","Timothy","Rachael","Stephen","Phoebe","Andrew","Betty","Thomas","Christine","Philip","Agnes","Simon","Florence","Mark","Annet","Luke","Violet","Matthew","Dorcus","Benjamin","Sharon","Charles","Immaculate","Robert","Prossy","George","Teddy","Henry","Harriet","Richard","Jane","Edward","Margaret","William","Allen","Francis","Winnie","Kenneth","Carol","Albert","Sandra","Martin","Pamela","Victor","Brenda","Brian","Gloria","Collins","Doreen","Denis","Catherine","Alex","Irene","Patrick","Joan","Ivan","Resty","Hassan","Amina","Ali","Fatuma","Musa","Zainab","Kevin","Derrick","Patricia","Ronald","Jackline"];
-let lastNames=["Kato","Nakato","Mukasa","Nalubega","Ssemwanga","Nabukenya","Okello","Achieng","Mugisha","Atim","Kizito","Nansubuga","Otim","Akello","Wasswa","Babirye","Ssali","Nalwoga","Kiprop","Chebet"];
-let members=[];
-for(let i=1;i<=100;i++){
-  members.push({id:"MEM"+String(i).padStart(3,'0'), name:firstNames[(i-1)%firstNames.length]+" "+lastNames[(i-1)%lastNames.length], phone:"07"+(70000000+i*12345)%90000000, shares:5+(i%50), savings:50000+(i*15000), loan: i%3==0?500000:0, status:"Active"});
-}
+let role = "Super Admin";
+let members = [
+["MEM001","Peter Kato","0772123456"],["MEM002","Mary Nakato","0772123457"],["MEM003","John Mukasa","0772123458"],["MEM004","Grace Nalubega","0772123459"],["MEM005","David Ssemwanga","0772123460"],["MEM006","Sarah Nabukenya","0772123461"],["MEM007","Moses Okello","0772123462"],["MEM008","Ruth Achieng","0772123463"],["MEM009","James Mugisha","0772123464"],["MEM010","Esther Atim","0772123465"],
+["MEM011","Paul Kizito","0772123466"],["MEM012","Rebecca Nansubuga","0772123467"],["MEM013","Daniel Otim","0772123468"],["MEM014","Joyce Akello","0772123469"],["MEM015","Samuel Wasswa","0772123470"],["MEM016","Hannah Babirye","0772123471"],["MEM017","Joseph Ssali","0772123472"],["MEM018","Martha Nalwoga","0772123473"],["MEM019","Isaac Kiprop","0772123474"],["MEM020","Naomi Chebet","0772123475"],
+["MEM021","Jacob Mbabazi","0772123476"],["MEM022","Lydia Tumusiime","0772123477"],["MEM023","Emmanuel Kagwa","0772123478"],["MEM024","Faith Namukasa","0772123479"],["MEM025","Joshua Byaruhanga","0772123480"],["MEM026","Priscilla Nakiyingi","0772123481"],["MEM027","Michael Onyango","0772123482"],["MEM028","Deborah Adongo","0772123483"],["MEM029","Aaron Mwesigye","0772123484"],["MEM030","Miriam Nakigudde","0772123485"],
+["MEM031","Timothy Ssenyonga","0772123486"],["MEM032","Rachael Auma","0772123487"],["MEM033","Stephen Kintu","0772123488"],["MEM034","Phoebe Nabirye","0772123489"],["MEM035","Andrew Mugerwa","0772123490"],["MEM036","Betty Nakazzi","0772123491"],["MEM037","Thomas Lubega","0772123492"],["MEM038","Christine Nantongo","0772123493"],["MEM039","Philip Ssebuguzi","0772123494"],["MEM040","Agnes Kyomuhendo","0772123495"],
+["MEM041","Simon Nalule","0772123496"],["MEM042","Florence Ssempala","0772123497"],["MEM043","Mark Opio","0772123498"],["MEM044","Annet Achan","0772123499"],["MEM045","Luke Kizza","0772123500"],["MEM046","Violet Nalwanga","0772123501"],["MEM047","Matthew Muwanga","0772123502"],["MEM048","Dorcus Namaganda","0772123503"],["MEM049","Benjamin Tumwebaze","0772123504"],["MEM050","Sharon Nakato","0772123505"],
+["MEM051","Charles Kizito","0772123506"],["MEM052","Immaculate Nansubuga","0772123507"],["MEM053","Robert Otim","0772123508"],["MEM054","Prossy Akello","0772123509"],["MEM055","George Wasswa","0772123510"],["MEM056","Teddy Babirye","0772123511"],["MEM057","Henry Ssali","0772123512"],["MEM058","Harriet Nalwoga","0772123513"],["MEM059","Richard Kiprop","0772123514"],["MEM060","Jane Chebet","0772123515"],
+["MEM061","Edward Mbabazi","0772123516"],["MEM062","Margaret Tumusiime","0772123517"],["MEM063","William Kagwa","0772123518"],["MEM064","Allen Namukasa","0772123519"],["MEM065","Francis Byaruhanga","0772123520"],["MEM066","Winnie Nakiyingi","0772123521"],["MEM067","Kenneth Onyango","0772123522"],["MEM068","Carol Adongo","0772123523"],["MEM069","Albert Mwesigye","0772123524"],["MEM070","Sandra Nakigudde","0772123525"],
+["MEM071","Martin Ssenyonga","0772123526"],["MEM072","Pamela Auma","0772123527"],["MEM073","Victor Kintu","0772123528"],["MEM074","Brenda Nabirye","0772123529"],["MEM075","Brian Mugerwa","0772123530"],["MEM076","Gloria Nakazzi","0772123531"],["MEM077","Collins Lubega","0772123532"],["MEM078","Doreen Nantongo","0772123533"],["MEM079","Denis Ssebuguzi","0772123534"],["MEM080","Catherine Kyomuhendo","0772123535"],
+["MEM081","Alex Nalule","0772123536"],["MEM082","Irene Ssempala","0772123537"],["MEM083","Patrick Opio","0772123538"],["MEM084","Joan Achan","0772123539"],["MEM085","Ivan Kizza","0772123540"],["MEM086","Resty Nalwanga","0772123541"],["MEM087","Hassan Muwanga","0772123542"],["MEM088","Amina Namaganda","0772123543"],["MEM089","Ali Tumwebaze","0772123544"],["MEM090","Fatuma Nakato","0772123545"],
+["MEM091","Musa Kizito","0772123546"],["MEM092","Zainab Nansubuga","0772123547"],["MEM093","Kevin Otim","0772123548"],["MEM094","Derrick Akello","0772123549"],["MEM095","Patricia Wasswa","0772123550"],["MEM096","Ronald Babirye","0772123551"],["MEM097","Jackline Ssali","0772123552"],["MEM098","Denis Nalwoga","0772123553"],["MEM099","Kevin Kiprop","0772123554"],["MEM100","Patricia Chebet","0772123555"]
+];
 function renderMembers(list){
-  list=list||members;
-  document.getElementById('memberTable').innerHTML=list.map(m=>`<tr><td>${m.id}</td><td>${m.name}</td><td>${m.phone}</td><td>${m.shares}</td><td>${m.savings.toLocaleString()}</td><td>${m.loan.toLocaleString()}</td><td>${m.status}</td></tr>`).join('');
-  document.getElementById('totalTop').innerText=members.length;
+  list = list || members;
+  let html="";
+  list.forEach((m,i)=>{
+    let shares = 5 + (i % 45);
+    let savings = 50000 + (i+1)*17300;
+    let loan = (i%3==0)?500000:0;
+    html+=`<tr><td>${m[0]}</td><td>${m[1]}</td><td>${m[2]}</td><td>${shares}</td><td>${savings.toLocaleString()}</td><td>${loan.toLocaleString()}</td><td>Active</td></tr>`;
+  });
+  document.getElementById('memberTable').innerHTML = html;
 }
-function filterMembers(){
+function doSearch(){
   let q=document.getElementById('searchBox').value.toLowerCase();
-  renderMembers(members.filter(m=>m.name.toLowerCase().includes(q)||m.id.toLowerCase().includes(q)));
+  renderMembers(members.filter(m=>m[1].toLowerCase().includes(q)||m[0].toLowerCase().includes(q)));
 }
 let logins=[
-  {user:"allan128",role:"Super Admin",date:"12/11/2026",time:"08:02:15 AM",device:"DESKTOP-JEMO / 192.168.1.5",data:"Chrome Win11",status:"Success"},
-  {user:"mary12",role:"Cashier",date:"12/11/2026",time:"09:00:42 AM",device:"DESKTOP-02 / 192.168.1.12",data:"Chrome Win10",status:"Success"},
-  {user:"mary12",role:"Cashier",date:"12/11/2026",time:"08:58:10 AM",device:"DESKTOP-02 / 192.168.1.12",data:"Chrome Win10",status:"FAILED - Wrong Password"},
-  {user:"john34",role:"Loans Officer",date:"12/11/2026",time:"08:30:05 AM",device:"PHONE-TECNO / 192.168.1.20",data:"Mobile Chrome",status:"Success"},
-  {user:"unknown",role:"Unknown",date:"11/11/2026",time:"11:15 PM",device:"UNKNOWN / 41.210.0.5",data:"Firefox",status:"FAILED - Unknown User"}
+  {u:"allan128",r:"Super Admin",d:"12/11/2026",t:"08:02:15 AM",dev:"DESKTOP-JEMO / 192.168.1.5",data:"Chrome Win 11",s:"Success"},
+  {u:"mary12",r:"Cashier",d:"12/11/2026",t:"09:00:42 AM",dev:"DESKTOP-02 / 192.168.1.12",data:"Chrome Win 10",s:"Success"},
+  {u:"mary12",r:"Cashier",d:"12/11/2026",t:"08:58:10 AM",dev:"DESKTOP-02 / 192.168.1.12",data:"Chrome Win 10",s:"FAILED - Wrong Password"},
+  {u:"john34",r:"Loans Officer",d:"12/11/2026",t:"08:30:05 AM",dev:"PHONE-TECNO / 192.168.1.20",data:"Mobile Chrome",s:"Success"},
+  {u:"unknown",r:"Unknown",d:"11/11/2026",t:"11:15:00 PM",dev:"UNKNOWN / 41.210.0.5",data:"Firefox",[STRIPPED] - Unknown User"},
+  {u:"peter01",r:"Member",d:"12/11/2026",t:"10:12:33 AM",dev:"PHONE-SAMSUNG / 192.168.1.25",data:"Mobile Chrome",s:"Success"},
+  {u:"grace04",r:"Member",d:"12/11/2026",t:"10:45:12 AM",dev:"DESKTOP-03 / 192.168.1.15",data:"Edge Win 11",s:"Success"}
 ];
-function renderLogins(list){
+function renderLogin(list){
   list=list||logins;
   if(role!=="Super Admin"){ document.getElementById('loginTable').innerHTML=`<tr><td colspan=7 style="color:red;text-align:center"><b>ACCESS DENIED - Super Admin Only</b></td></tr>`; return; }
-  document.getElementById('loginTable').innerHTML=list.map(l=>`<tr><td>${l.user}</td><td>${l.role}</td><td>${l.date}</td><td>${l.time}</td><td>${l.device}</td><td>${l.data}</td><td style="color:${l.status.includes('FAILED')?'red':'green'}"><b>${l.status}</b></td></tr>`).join('');
+  document.getElementById('loginTable').innerHTML=list.map(l=>`<tr><td>${l.u}</td><td>${l.r}</td><td>${l.d}</td><td>${l.t}</td><td>${l.dev}</td><td>${l.data}</td><td style="color:${l.s.includes('FAILED')?'red':'green'}"><b>${l.s}</b></td></tr>`).join('');
 }
 function filterLogin(){
   let q=document.getElementById('loginSearch').value.toLowerCase();
-  renderLogins(logins.filter(l=>l.user.toLowerCase().includes(q)||l.date.includes(q)));
+  renderLogin(logins.filter(l=>l.u.toLowerCase().includes(q)||l.d.includes(q)));
 }
-function show(id){
-  ['members','loginHistory','shares'].forEach(x=>document.getElementById(x).style.display='none');
-  document.getElementById(id).style.display='block';
+function showPage(id){
+  ["membersPage","loginPage","sharesPage"].forEach(x=>document.getElementById(x).style.display="none");
+  document.getElementById(id).style.display="block";
 }
-renderMembers(); renderLogins();
+renderMembers(); renderLogin();
 </script>
 </body></html>
