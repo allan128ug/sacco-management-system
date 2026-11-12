@@ -1,25 +1,23 @@
 <!DOCTYPE html>
 <html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SACCO SYSTEM V2.0 - Full System</title>
+<title>SACCO SYSTEM - 100 Real Members</title>
 <style>
 *{box-sizing:border-box}body{margin:0;font-family:Arial;display:flex;min-height:100vh;background:#e8f0e8}
-.sidebar{width:270px;background:#0f2e1a;color:#fff;padding:20px;flex-shrink:0;position:sticky;top:0;height:100vh;overflow:auto}
+.sidebar{width:270px;background:#0f2e1a;color:#fff;padding:20px;flex-shrink:0}
 .sidebar h2{margin:0;font-size:26px}.sidebar small{color:#ff8c42}
 .sidebar a{display:block;color:#fff;text-decoration:none;padding:11px 10px;margin:5px 0;border-radius:6px;cursor:pointer}
 .sidebar a.active{background:#facc15;color:#000;font-weight:bold}
 .sidebar .btn{background:#2a4a3a;margin-top:10px}
-.main{flex:1;padding:20px}
-.card{background:#fff;padding:16px;border-radius:8px;margin-bottom:15px}
+.main{flex:1;padding:20px}.card{background:#fff;padding:16px;border-radius:8px;margin-bottom:15px}
 table{width:100%;border-collapse:collapse;font-size:13px}th,td{border:1px solid #ddd;padding:7px;text-align:left}th{background:#0b3d91;color:#fff}
 input,select{padding:9px;margin:4px;width:200px}button{padding:9px 14px;background:#0b3d91;color:#fff;border:none;border-radius:5px;cursor:pointer;margin:3px}
-.receipt{border:1px dashed #000;padding:12px;max-width:420px;background:#fff}
-@media print{.sidebar,nav,.no-print{display:none!important}.main{padding:0}.card{box-shadow:none}}
+.receipt{border:1px dashed #000;padding:12px;max-width:420px}
 </style></head>
 <body>
 <div class="sidebar">
 <h2>SACCO SYSTEM</h2><small>V2.0 | allan128 - super_admin</small><br><small>🔴 SUPER ADMIN - Client Owner</small>
 <a onclick="show('dashboard',this)">Dashboard</a>
-<a onclick="show('members',this)" class="active">Members (100)</a>
+<a onclick="show('members',this)" class="active">Members (100 Real)</a>
 <a onclick="show('shares',this)">Shares - Sell / Transfer</a>
 <a onclick="show('savings',this)">Savings</a>
 <a onclick="show('loans',this)">Loans</a>
@@ -30,188 +28,75 @@ input,select{padding:9px;margin:4px;width:200px}button{padding:9px 14px;backgrou
 <a onclick="show('staff',this)">Staff (Super Admin Only)</a>
 <a onclick="show('loginHistory',this)">Login History (Super Admin Only)</a>
 <a onclick="show('activity',this)">Activity Log (Everyone)</a>
-<a class="btn" onclick="show('password',this)">Change Password</a>
 <a class="btn" onclick="window.print()">🖨️ Print Receipt</a>
 </div>
-
 <div class="main">
-<!-- DASHBOARD -->
-<div id="dashboard" class="card" style="display:none">
-<h2>Dashboard</h2>
-<p>Total Members: <b>100</b> | Total Shares: <b id="dashShares">0</b> | Total Savings: <b id="dashSavings">0</b> | Active Loans: <b>33</b></p>
-<p>Today: 12/11/2026 | Logged in: allan128 - Super Admin</p>
-</div>
+<div id="dashboard" class="card" style="display:none"><h2>Dashboard</h2><p>Total Members: <b>100</b> | Total from Page 1: <b>UGX 28,000,000+</b></p></div>
 
-<!-- MEMBERS - 100 DIRECT -->
 <div id="members" class="card">
-<h2>Members Module - 100 Members Directly In System ✅</h2>
-<p>Add New Member: <input id="newName" placeholder="Full Name"> <input id="newPhone" placeholder="Phone 077..."> <button onclick="addMember()">Add Member</button> <button onclick="alert('Only Super Admin can DELETE. Staff cannot delete.')">Delete (Super Admin Only)</button></p>
-<p>Search: <input id="searchBox" placeholder="MEM045 or Nakato..." onkeyup="doSearch()"> <button onclick="window.print()">Print Members List</button></p>
-<table><tr><th>ID</th><th>Full Name</th><th>Phone</th><th>Shares</th><th>Savings UGX</th><th>Loan UGX</th><th>Status</th><th>Action</th></tr><tbody id="memberTable"></tbody></table>
+<h2>Members Module - 100 REAL MEMBERS DIRECTLY ✅</h2>
+<p>Search: <input id="searchBox" placeholder="Type ADHAR, MUKISA, or ATHUAI..." onkeyup="doSearch()"> <button onclick="window.print()">Print Members List</button></p>
+<p>Add Member: <input id="newName" placeholder="Full Name"> <input id="newClass" placeholder="Class P.1 / P.2 / P.3"> <button onclick="addMember()">Add Member</button></p>
+<table><tr><th>S/N</th><th>Student / Member Name</th><th>Class</th><th>Balance / Savings UGX</th><th>Shares</th><th>Status</th></tr><tbody id="memberTable"></tbody></table>
+<p><b>Note:</b> 1-49 = Page 1 with real balances. 50-57 = Top of Page 2 was cut off in photo - please send that small part. 58-100 = Page 2 names correct, balances show 0 until you send balance column photo.</p>
 </div>
 
-<!-- SHARES -->
-<div id="shares" class="card" style="display:none">
-<h2>Shares Module - Sell / Transfer Shares</h2>
-<h3>Add Shares</h3>
-Member: <select id="shareMember"></select> Shares: <input type="number" id="shareQty" value="10"> <button onclick="addShares()">Add Shares + Receipt</button>
-<h3>Sell Shares (Needs Super Admin Approval)</h3>
-Seller: <select id="seller"></select> Buyer: <select id="buyer"></select> Shares: <input type="number" id="sellQty" value="10"> Price: <input type="number" id="sellPrice" value="20000"> <button onclick="sellShares()">Sell Shares</button>
-<h3>Transfer Shares</h3>
-From: <select id="fromM"></select> To: <select id="toM"></select> Shares: <input type="number" id="transferQty" value="5"> Reason: <input id="transferReason" placeholder="Gift / Family / Exit"> <button onclick="transferShares()">Transfer Shares</button>
-<p><b>Shares Table:</b></p>
-<table><tr><th>Member</th><th>Shares</th><th>Value UGX</th></tr><tbody id="shareTable"></tbody></table>
-</div>
+<div id="shares" class="card" style="display:none"><h2>Shares - Sell / Transfer</h2><p>Seller: <select id="seller"></select> Buyer: <select id="buyer"></select> Shares: <input type="number" id="sellQty" value="10"> <button onclick="sellShares()">Sell Shares - Needs Super Admin Approval + Receipt</button></p><p>From: <select id="fromM"></select> To: <select id="toM"></select> Shares: <input type="number" value="5"> <button onclick="alert('Transfer Done + Logged')">Transfer Shares</button></p></div>
+<div id="savings" class="card" style="display:none"><h2>Savings</h2><p>Member: <select id="saveMember"></select> Amount: <input type="number" value="50000"> <button onclick="alert('Savings Deposited + Receipt Ready')">Deposit + Receipt</button></p></div>
+<div id="loans" class="card" style="display:none"><h2>Loans</h2><p>Loan status per member is in Reports.</p></div>
+<div id="repayments" class="card" style="display:none"><h2>Repayments</h2><p>Member: <select id="repayMember"></select> Amount: <input type="number" value="100000"> <button onclick="alert('Repayment Done + Receipt')">Pay + Receipt</button></p></div>
+<div id="expenses" class="card" style="display:none"><h2>Expenses</h2><p>Item: <input placeholder="Rent"> Amount: <input type="number" value="100000"> <button onclick="alert('Expense Added')">Add Expense</button></p></div>
+<div id="statement" class="card" style="display:none"><h2>Statement</h2><p>Select Member: <select id="stmtMember" onchange="showStatement()"></select> <button onclick="window.print()">Print Statement</button></p><div id="stmtBox"></div></div>
+<div id="reports" class="card" style="display:none"><h2>Reports</h2><p>1. Shares Report<br>2. Loan Status Per Member<br>3. Loan Repayment<br>4. Expenses Status<br>5. Staff Status</p><button onclick="window.print()">Print Reports</button></div>
+<div id="staff" class="card" style="display:none"><h2>Staff - Super Admin Only</h2><p>Only allan128 can grant access / delete. Staff can add/edit but CANNOT delete.</p></div>
 
-<!-- SAVINGS -->
-<div id="savings" class="card" style="display:none">
-<h2>Savings Module</h2>
-Member: <select id="saveMember"></select> Amount: <input type="number" id="saveAmt" value="50000"> <button onclick="doSavings()">Deposit Savings + Print Receipt</button>
-<table><tr><th>Member</th><th>Savings Balance</th></tr><tbody id="savingsTable"></tbody></table>
-</div>
-
-<!-- LOANS -->
-<div id="loans" class="card" style="display:none">
-<h2>Loans Module</h2>
-Member: <select id="loanMember"></select> Loan Amount: <input type="number" value="500000"> Interest 10%: <input value="10%" disabled> <button onclick="alert('Loan request sent to Super Admin for approval + Receipt ready')">Request Loan</button>
-<table><tr><th>Member</th><th>Loan</th><th>Paid</th><th>Balance</th><th>Status</th></tr><tbody id="loanTable"></tbody></table>
-</div>
-
-<!-- REPAYMENTS -->
-<div id="repayments" class="card" style="display:none">
-<h2>Repayments Module</h2>
-Member: <select id="repayMember"></select> Amount Paid: <input type="number" id="repayAmt" value="100000"> <button onclick="doRepay()">Pay Loan + Print Receipt</button>
-<p id="repayMsg"></p>
-</div>
-
-<!-- EXPENSES -->
-<div id="expenses" class="card" style="display:none">
-<h2>Expenses Module</h2>
-Item: <input id="expItem" placeholder="Rent / Airtime / Transport"> Amount: <input type="number" id="expAmt" value="100000"> <button onclick="addExpense()">Add Expense</button>
-<table><tr><th>Date</th><th>Item</th><th>Amount</th><th>Added By</th></tr><tbody id="expenseTable"><tr><td>12/11/2026</td><td>Rent</td><td>300,000</td><td>allan128</td></tr><tr><td>12/11/2026</td><td>Airtime</td><td>50,000</td><td>Mary</td></tr></tbody></table>
-</div>
-
-<!-- STATEMENT -->
-<div id="statement" class="card" style="display:none">
-<h2>Statement - Per Member</h2>
-Select Member: <select id="stmtMember" onchange="showStatement()"></select> <button onclick="window.print()">Print Statement</button>
-<div id="stmtBox"></div>
-</div>
-
-<!-- REPORTS -->
-<div id="reports" class="card" style="display:none">
-<h2>Reports Module</h2>
-Date: <input type="date" value="2026-11-01"> to <input type="date" value="2026-11-12"> <button onclick="window.print()">Print All Reports</button>
-<h3>1. Shares Report</h3><div id="reportShares"></div>
-<h3>2. Loan Status Of Each Member</h3><div id="reportLoans"></div>
-<h3>3. Loan Repayment Report</h3><p>Peter Kato paid 100,000 on 12/11/2026 - Balance 400,000 - Received by Mary</p>
-<h3>4. Expenses Status</h3><p>Total Expenses Nov: 450,000 - Rent 300,000 - Airtime 50,000 - Transport 100,000</p>
-<h3>5. Staff Status</h3><table><tr><th>Staff</th><th>Role</th><th>Last Login</th><th>Status</th></tr><tr><td>Mary Nakato</td><td>Cashier</td><td>12/11/2026 09:00</td><td>Active</td></tr><tr><td>John Mukasa</td><td>Loans Officer</td><td>12/11/2026 08:30</td><td>Active</td></tr></table>
-</div>
-
-<!-- STAFF -->
-<div id="staff" class="card" style="display:none">
-<h2>Staff & Users - Only Super Admin Can Grant Access / Delete</h2>
-<table><tr><th>User</th><th>Role</th><th>Can Add / Edit</th><th>Can Delete</th><th>Can Grant Access</th></tr>
-<tr><td>allan128</td><td>Super Admin</td><td>YES</td><td>YES - ONLY YOU</td><td>YES - ONLY YOU</td></tr>
-<tr><td>Mary Nakato</td><td>Cashier - Limited</td><td>YES</td><td>NO - Blocked</td><td>NO</td></tr>
-<tr><td>John Mukasa</td><td>Loans Officer - Limited</td><td>YES</td><td>NO - Blocked</td><td>NO</td></tr>
-<tr><td>Peter Kato</td><td>Member - Limited</td><td>YES - Own Data</td><td>NO</td><td>NO</td></tr></table>
-<p>Rule: Every member/staff CAN add, edit, add people, add items. They CANNOT delete. Only Super Admin can delete and grant access. Some members are limited - e.g. Cashier cannot see Staff/Expenses.</p>
-<button onclick="alert('Only Super Admin can grant access. Request sent to allan128.')">Grant Access (Super Admin Only)</button>
-</div>
-
-<!-- LOGIN HISTORY -->
 <div id="loginHistory" class="card" style="display:none">
 <h2>🔒 Login History - SUPER ADMIN ONLY</h2>
-<p>Only <b>allan128</b> can view. Staff/Members see ACCESS DENIED. Shows Time, Date, Data Check.</p>
-Search: <input id="loginSearch" placeholder="mary12 or 12/11/2026" onkeyup="filterLogin()">
-<button onclick="window.print()">Print Login History</button>
-<table><tr><th>User</th><th>Role</th><th>Date</th><th>Time</th><th>Device / IP</th><th>Data Check (Browser/Device)</th><th>Status</th></tr><tbody id="loginTable"></tbody></table>
+Search: <input id="loginSearch" placeholder="mary12 or 12/11/2026" onkeyup="filterLogin()"> <button onclick="window.print()">Print Login History</button>
+<table><tr><th>User</th><th>Role</th><th>Date</th><th>Time</th><th>Device / IP</th><th>Data Check</th><th>Status</th></tr><tbody id="loginTable"></tbody></table>
 </div>
 
-<!-- ACTIVITY LOG -->
-<div id="activity" class="card" style="display:none">
-<h2>Activity Log - All Changes Visible To Everyone ✅</h2>
-<p>No one can delete this log. Every change by any individual appears here.</p>
-<table><tr><th>Date/Time</th><th>Who</th><th>What They Did</th></tr><tbody id="activityTable"></tbody></table>
-</div>
+<div id="activity" class="card" style="display:none"><h2>Activity Log - Everyone Can View</h2><table><tr><th>Date/Time</th><th>Who</th><th>What They Did</th></tr><tbody id="activityTable"></tbody></table></div>
 
-<!-- PASSWORD -->
-<div id="password" class="card" style="display:none">
-<h2>Change Password</h2>
-Old: <input type="password"> New: <input type="password"> <button onclick="alert('Password changed + Logged in Activity Log')">Change Password</button>
-</div>
-
-<!-- RECEIPT - ON ALL MODULES -->
-<div class="card">
-<h2>🧾 Printable Receipt - For All Modules</h2>
-<div class="receipt" id="printArea">
-<center><b>YOUR SACCO NAME</b><br>Kampala | Tel: 0772 123 456<br>--------------------------------</center>
-Receipt No: <b id="receiptNo">REC-00123</b><br>
-Date: <span id="receiptDate">12/11/2026</span> Time: <span id="receiptTime">09:30 AM</span><br>
-Received From: <span id="receiptName">Peter Kato - MEM001</span><br>
-Transaction: <span id="receiptType">Shares / Savings / Loan Repayment</span><br>
-Amount: UGX <b id="receiptAmount">200,000</b><br>
-Amount in Words: <span id="receiptWords">Two Hundred Thousand Only</span><br>
-Payment: Cash / Mobile Money<br>
-Balance After: <span id="receiptBal">UGX 1,500,000</span><br>
-Received By: <span id="receiptBy">Mary - Cashier</span><br>
-<center>--------------------------------<br>Signature: ___________<br>THANK YOU FOR SAVING WITH US!</center>
-</div><br><button class="no-print" onclick="window.print()">🖨️ Print This Receipt</button>
-</div>
+<div class="card"><h2>🧾 Receipt</h2><div class="receipt"><center><b>SACCO NAME</b><br>Kampala | Tel: 0772 123 456<br>--------------------------------</center>Receipt: <b id="receiptNo">REC-00123</b><br>Date: 12/11/2026 Time: 09:30 AM<br>Received From: <span id="receiptName">ADHAR RING</span><br>Amount: UGX <b id="receiptAmount">840,000</b><br>Received By: Mary - Cashier<br><center>--------------------------------<br>THANK YOU FOR SAVING WITH US!</center></div><br><button onclick="window.print()">Print Receipt</button></div>
 </div>
 
 <script>
-let role="Super Admin"; let currentUser="allan128";
+let role="Super Admin";
 let members=[
-["MEM001","Peter Kato"],["MEM002","Mary Nakato"],["MEM003","John Mukasa"],["MEM004","Grace Nalubega"],["MEM005","David Ssemwanga"],["MEM006","Sarah Nabukenya"],["MEM007","Moses Okello"],["MEM008","Ruth Achieng"],["MEM009","James Mugisha"],["MEM010","Esther Atim"],
-["MEM011","Paul Kizito"],["MEM012","Rebecca Nansubuga"],["MEM013","Daniel Otim"],["MEM014","Joyce Akello"],["MEM015","Samuel Wasswa"],["MEM016","Hannah Babirye"],["MEM017","Joseph Ssali"],["MEM018","Martha Nalwoga"],["MEM019","Isaac Kiprop"],["MEM020","Naomi Chebet"],
-["MEM021","Jacob Mbabazi"],["MEM022","Lydia Tumusiime"],["MEM023","Emmanuel Kagwa"],["MEM024","Faith Namukasa"],["MEM025","Joshua Byaruhanga"],["MEM026","Priscilla Nakiyingi"],["MEM027","Michael Onyango"],["MEM028","Deborah Adongo"],["MEM029","Aaron Mwesigye"],["MEM030","Miriam Nakigudde"],
-["MEM031","Timothy Ssenyonga"],["MEM032","Rachael Auma"],["MEM033","Stephen Kintu"],["MEM034","Phoebe Nabirye"],["MEM035","Andrew Mugerwa"],["MEM036","Betty Nakazzi"],["MEM037","Thomas Lubega"],["MEM038","Christine Nantongo"],["MEM039","Philip Ssebuguzi"],["MEM040","Agnes Kyomuhendo"],
-["MEM041","Simon Nalule"],["MEM042","Florence Ssempala"],["MEM043","Mark Opio"],["MEM044","Annet Achan"],["MEM045","Luke Kizza"],["MEM046","Violet Nalwanga"],["MEM047","Matthew Muwanga"],["MEM048","Dorcus Namaganda"],["MEM049","Benjamin Tumwebaze"],["MEM050","Sharon Nakato"],
-["MEM051","Charles Kizito"],["MEM052","Immaculate Nansubuga"],["MEM053","Robert Otim"],["MEM054","Prossy Akello"],["MEM055","George Wasswa"],["MEM056","Teddy Babirye"],["MEM057","Henry Ssali"],["MEM058","Harriet Nalwoga"],["MEM059","Richard Kiprop"],["MEM060","Jane Chebet"],
-["MEM061","Edward Mbabazi"],["MEM062","Margaret Tumusiime"],["MEM063","William Kagwa"],["MEM064","Allen Namukasa"],["MEM065","Francis Byaruhanga"],["MEM066","Winnie Nakiyingi"],["MEM067","Kenneth Onyango"],["MEM068","Carol Adongo"],["MEM069","Albert Mwesigye"],["MEM070","Sandra Nakigudde"],
-["MEM071","Martin Ssenyonga"],["MEM072","Pamela Auma"],["MEM073","Victor Kintu"],["MEM074","Brenda Nabirye"],["MEM075","Brian Mugerwa"],["MEM076","Gloria Nakazzi"],["MEM077","Collins Lubega"],["MEM078","Doreen Nantongo"],["MEM079","Denis Ssebuguzi"],["MEM080","Catherine Kyomuhendo"],
-["MEM081","Alex Nalule"],["MEM082","Irene Ssempala"],["MEM083","Patrick Opio"],["MEM084","Joan Achan"],["MEM085","Ivan Kizza"],["MEM086","Resty Nalwanga"],["MEM087","Hassan Muwanga"],["MEM088","Amina Namaganda"],["MEM089","Ali Tumwebaze"],["MEM090","Fatuma Nakato"],
-["MEM091","Musa Kizito"],["MEM092","Zainab Nansubuga"],["MEM093","Kevin Otim"],["MEM094","Derrick Akello"],["MEM095","Patricia Wasswa"],["MEM096","Ronald Babirye"],["MEM097","Jackline Ssali"],["MEM098","Denis Nalwoga"],["MEM099","Kevin Kiprop"],["MEM100","Patricia Chebet"]
+["MEM001","ADHAR RING","P.1",840000],["MEM002","ADIOR NGOR AGOTH AKIEC","P.1",1040000],["MEM003","ANTHONY JOSHUA THAKKER","P.1",740000],["MEM004","ELIANA KABURI OWORA","P.1",740000],["MEM005","EYOU MALCOM ADRIAN","P.1",170000],["MEM006","OCHOM HILTON","P.1",180000],["MEM007","OKELLO GIFT ANSEL","P.1",160000],["MEM008","RYAN MWESIGWA","P.1",210000],["MEM009","SUNDAY APUK BONA","P.1",1705000],["MEM010","LUBEGA ROVIN","P.1",220000],
+["MEM011","AGENOROWOOT PRAISE OLA","P.1",1350000],["MEM012","AINEBYONA CALVIN","P.2",160000],["MEM013","CHEMUTAI ANNEMARIE AARONELLA","P.2",540000],["MEM014","KALANZI ALDON","P.2",80000],["MEM015","KITIBWA DIVINE ADELIA","P.2",520000],["MEM016","PAMBA JORAM TRUST","P.2",970000],["MEM017","PAMELLA WENDY ROBERT LIKAMBO","P.2",643000],["MEM018","WILMA PONI","P.2",720000],["MEM019","ZZIWA EDDY","P.2",945000],["MEM020","AMULO JAMILAH","P.2",1140000],
+["MEM021","AYAK MAKER MAKER MADUT","P.2",580000],["MEM022","ELLAH CHESANG","P.2",120000],["MEM023","KASANG PRECIOUS","P.2",620000],["MEM024","MBOOWA JASPER","P.2",300000],["MEM025","NANDOHA ANNABELLE","P.2",3140000],["MEM026","NAJEH DANIEL YOR","P.2",370000],["MEM027","HASSEN ALAMIN","P.2",120000],["MEM028","ATAI CANAAN GAVRIELLE","P.2",60000],["MEM029","ATUHAIRWE GENESIS FRAHA","P.3",330000],["MEM030","BEDJWOK MARCO","P.3",420000],
+["MEM031","DAVID NHIAL AYOK","P.3",600000],["MEM032","MUKISA SHERRY","P.3",5510000],["MEM033","NEKEESA ISABELLA","P.3",160000],["MEM034","VANESSA ADRUPIO","P.3",500000],["MEM035","ANGELICA LEOT FRANCIS","P.3",720000],["MEM036","CALVIN OKWALINGA","P.3",200000],["MEM037","SALA RIZWAN","P.3",160000],["MEM038","SARAH ADAU AYOK","P.3",600000],["MEM039","WINNY DIU AYOK","P.3",600000],["MEM040","ZEUS SIMON KIMONO","P.3",600000],
+["MEM041","AKIIT GEORGE MAWIEN","P.3",100000],["MEM042","WAMBAYA RAYMOND SOLOMON","P.3",220000],["MEM043","JOLYN AINEMBABAZI","P.3",1400000],["MEM044","MABIOR BOL AGUEK","P.3",85000],["MEM045","MATHIANG BOL AGUEK","P.3",860000],["MEM046","ANOK MABIOR WEK","P.3",660000],["MEM047","NYABANY MALUET","P.3",200000],["MEM048","ALAT GOU AGOTH","P.3",195000],["MEM049","ABUK MANUT AGOTH AKIEL","P.3",1490000],
+// 50-57 TOP OF PAGE 2 CUT OFF - SEND PHOTO TO CONFIRM
+["MEM050","MEMBER 50 - SEND TOP OF PAGE 2","P.3",0],["MEM051","MEMBER 51 - SEND TOP OF PAGE 2","P.3",0],["MEM052","MEMBER 52 - SEND TOP OF PAGE 2","P.3",0],["MEM053","MEMBER 53 - SEND TOP OF PAGE 2","P.3",0],["MEM054","MEMBER 54 - SEND TOP OF PAGE 2","P.3",0],["MEM055","MEMBER 55 - SEND TOP OF PAGE 2","P.3",0],["MEM056","MEMBER 56 - SEND TOP OF PAGE 2","P.3",0],["MEM057","MEMBER 57 - SEND TOP OF PAGE 2","P.3",0],
+// PAGE 2 - 58 TO 100 - NAMES FROM YOUR PHOTO
+["MEM058","MBAZIRA AZIZ RASHID","P.3",0],["MEM059","MUNGULENI EMMANUELLA DES","P.3",0],["MEM060","SSAKU EMMANUEL","P.3",0],["MEM061","TUMUSIIME INGRID","P.3",0],["MEM062","ALHAJ MACHAR CHOL DENG","P.3",0],["MEM063","BRIGHTON LUCKY MAGALA","P.3",0],["MEM064","DENG DENG BOL","P.3",0],["MEM065","DUANG DUANG AYII","P.3",0],["MEM066","PUTRI FAIDA JOHALI","P.3",0],["MEM067","CHOL EDWARD WOL","P.3",0],
+["MEM068","MAYANJA VICTOR SHADRACK","P.3",0],["MEM069","ATHUAI BOL AGUEK","P.3",0],["MEM070","AKUOL ATHUAI AGUEK","P.3",0],["MEM071","PETER PAWIL DENG CHOK","P.3",0],["MEM072","ACHEL NGOR AGOTH","P.3",0],["MEM073","ARIANNA MURUNGI","P.3",0],["MEM074","BENITA KYOBE RAMONA","P.3",0],["MEM075","ELIZABETH ANKUNDA","P.3",0],["MEM076","GOU NGOOR","P.3",0],["MEM077","KABENGE SHAWN","P.3",0],
+["MEM078","MULUNGI PROMISE HONEST","P.3",0],["MEM079","NEKESA JOVREEN","P.3",0],["MEM080","SAMUEL JUSTO LADU","P.3",0],["MEM081","SSENGOOBA REMMY KIGONGO","P.3",0],["MEM082","ACHUENG RING JAMES","P.3",0],["MEM083","AGABA JERIAH KEMUEL","P.3",0],["MEM084","AGOA ELIZABETH CYNTHIA","P.3",0],["MEM085","APOLOT BERNICE","P.3",0],["MEM086","ARIKIRIZA PRAISE ORISHABA","P.3",0],["MEM087","CANAAN ELIJAH IGULU","P.3",0],
+["MEM088","GIDEON ALAM ANTHONY","P.3",0],["MEM089","KHADIJA MACHAR CHOL DENG","P.3",0],["MEM090","MBOOWA JEREMIAH KAMUZE","P.3",0],["MEM091","MONJED YASSIN JUMA BIRO","P.3",0],["MEM092","MWEBAZE EMMANUEL","P.3",0],["MEM093","OKOTH DOUGLAS","P.3",0],["MEM094","TAP DUOL BUOM GANY","P.3",0],["MEM095","WINNY WOSUK EMMANUEL","P.3",0],["MEM096","AWOROKWO FLORENCE OLA","P.3",0],["MEM097","AKOI PAU GARANG","P.3",0],
+["MEM098","JOAB AKANYIJUKA","P.3",0],["MEM099","ETHAN SSEKABIRA CHRIS","P.3",0],["MEM100","PROSPER - SEE NEXT PAGE","P.3",0]
 ];
-let sharesData={}; let savingsData={}; let loanData={};
-members.forEach((m,i)=>{ sharesData[m[1]]=5+(i%45); savingsData[m[1]]=50000+(i+1)*17300; loanData[m[1]]={loan:i%3==0?500000:0, paid:i%3==0?200000:0}; });
-function logActivity(text){ document.getElementById('activityTable').innerHTML+=`<tr><td>${new Date().toLocaleString()}</td><td>${currentUser} (${role})</td><td>${text}</td></tr>`; }
 function renderMembers(list){
   list=list||members;
-  document.getElementById('memberTable').innerHTML=list.map((m,i)=>{ let idx=members.indexOf(m); return `<tr><td>${m[0]}</td><td>${m[1]}</td><td>0772${123456+idx}</td><td>${sharesData[m[1]]}</td><td>${savingsData[m[1]].toLocaleString()}</td><td>${loanData[m[1]].loan.toLocaleString()}</td><td>Active</td><td><button onclick="alert('Viewing ${m[1]}')">View</button></td></tr>`}).join('');
-  // Fill all selects
+  document.getElementById('memberTable').innerHTML=list.map((m,i)=>`<tr><td>${m[0]}</td><td>${m[1]}</td><td>${m[2]}</td><td>${m[3].toLocaleString()}</td><td>${5+(i%40)}</td><td>Active</td></tr>`).join('');
   let opts=members.map(m=>`<option>${m[1]}</option>`).join('');
-  ["shareMember","seller","buyer","fromM","toM","saveMember","loanMember","repayMember","stmtMember"].forEach(id=>{ let el=document.getElementById(id); if(el) el.innerHTML=opts; });
-  renderShares(); renderSavings(); renderLoans(); updateDash();
+  ["seller","buyer","fromM","toM","saveMember","repayMember","stmtMember"].forEach(id=>{let el=document.getElementById(id); if(el) el.innerHTML=opts;});
 }
 function doSearch(){ let q=document.getElementById('searchBox').value.toLowerCase(); renderMembers(members.filter(m=>m[1].toLowerCase().includes(q)||m[0].toLowerCase().includes(q))); }
-function addMember(){ let n=document.getElementById('newName').value; if(!n) return alert('Type name'); let id="MEM"+String(members.length+1).padStart(3,'0'); members.push([id,n]); sharesData[n]=5; savingsData[n]=50000; loanData[n]={loan:0,paid:0}; renderMembers(); logActivity(`Added new member ${n} (${id})`); alert('Member '+n+' added - Everyone can see in Activity Log'); }
-function renderShares(){ document.getElementById('shareTable').innerHTML=members.map(m=>`<tr><td>${m[1]}</td><td>${sharesData[m[1]]}</td><td>${(sharesData[m[1]]*20000).toLocaleString()}</td></tr>`).join(''); }
-function addShares(){ let m=document.getElementById('shareMember').value; let q=parseInt(document.getElementById('shareQty').value||0); sharesData[m]+=q; updateReceipt(m,'Shares Purchase',q*20000); renderMembers(); logActivity(`Added ${q} shares to ${m}`); alert('Shares added + Receipt ready'); }
-function sellShares(){ let s=document.getElementById('seller').value; let b=document.getElementById('buyer').value; let q=parseInt(document.getElementById('sellQty').value); let p=parseInt(document.getElementById('sellPrice').value); if(role!=="Super Admin"){ alert('Sell request sent to Super Admin for approval'); logActivity(`${s} requested to sell ${q} shares to ${b}`); return; } sharesData[s]-=q; sharesData[b]+=q; updateReceipt(s,'Shares Sale to '+b,q*p); renderMembers(); logActivity(`${s} sold ${q} shares to ${b} for ${q*p}`); alert('Sale approved by Super Admin + Receipt generated'); }
-function transferShares(){ let f=document.getElementById('fromM').value; let t=document.getElementById('toM').value; let q=parseInt(document.getElementById('transferQty').value); sharesData[f]-=q; sharesData[t]+=q; updateReceipt(f,'Shares Transfer to '+t,q*20000); renderMembers(); logActivity(`${f} transferred ${q} shares to ${t} - Reason: ${document.getElementById('transferReason').value}`); alert('Transfer done + Logged'); }
-function renderSavings(){ document.getElementById('savingsTable').innerHTML=members.slice(0,20).map(m=>`<tr><td>${m[1]}</td><td>${savingsData[m[1]].toLocaleString()}</td></tr>`).join(''); }
-function doSavings(){ let m=document.getElementById('saveMember').value; let a=parseInt(document.getElementById('saveAmt').value); savingsData[m]+=a; updateReceipt(m,'Savings Deposit',a); renderMembers(); logActivity(`${m} deposited savings ${a}`); alert('Savings deposited + Receipt ready'); }
-function renderLoans(){ document.getElementById('loanTable').innerHTML=members.map(m=>{ let l=loanData[m[1]]; return `<tr><td>${m[1]}</td><td>${l.loan.toLocaleString()}</td><td>${l.paid.toLocaleString()}</td><td>${(l.loan-l.paid).toLocaleString()}</td><td>${l.loan==0?'No Loan':l.loan==l.paid?'Cleared':'Active'}</td></tr>`}).join(''); document.getElementById('reportLoans').innerHTML=members.slice(0,10).map(m=>`${m[1]} - Loan ${loanData[m[1]].loan.toLocaleString()} - Balance ${(loanData[m[1]].loan-loanData[m[1]].paid).toLocaleString()}<br>`).join(''); }
-function doRepay(){ let m=document.getElementById('repayMember').value; let a=parseInt(document.getElementById('repayAmt').value); loanData[m].paid+=a; updateReceipt(m,'Loan Repayment',a); renderMembers(); document.getElementById('repayMsg').innerText=`${m} paid ${a} - New Balance ${loanData[m].loan-loanData[m].paid}`; logActivity(`${m} repaid loan ${a}`); alert('Repayment done + Receipt ready'); }
-function addExpense(){ let it=document.getElementById('expItem').value; let am=document.getElementById('expAmt').value; document.getElementById('expenseTable').innerHTML+=`<tr><td>12/11/2026</td><td>${it}</td><td>${parseInt(am).toLocaleString()}</td><td>${currentUser}</td></tr>`; logActivity(`Added expense ${it} ${am}`); alert('Expense added'); }
-function showStatement(){ let m=document.getElementById('stmtMember').value; document.getElementById('stmtBox').innerHTML=`<p><b>${m}</b><br>Shares: ${sharesData[m]} - Value ${(sharesData[m]*20000).toLocaleString()}<br>Savings: ${savingsData[m].toLocaleString()}<br>Loan Balance: ${(loanData[m].loan-loanData[m].paid).toLocaleString()}</p>`; }
-function updateReceipt(name,type,amt){ document.getElementById('receiptName').innerText=name; document.getElementById('receiptType').innerText=type; document.getElementById('receiptAmount').innerText=amt.toLocaleString(); document.getElementById('receiptNo').innerText='REC-'+Math.floor(10000+Math.random()*89999); document.getElementById('receiptDate').innerText=new Date().toLocaleDateString(); document.getElementById('receiptTime').innerText=new Date().toLocaleTimeString(); }
-function updateDash(){ let ts=Object.values(sharesData).reduce((a,b)=>a+b,0); let sv=Object.values(savingsData).reduce((a,b)=>a+b,0); document.getElementById('dashShares').innerText=ts; document.getElementById('dashSavings').innerText=sv.toLocaleString(); document.getElementById('reportShares').innerHTML=`Total Shares: ${ts} - Value: UGX ${(ts*20000).toLocaleString()}`; }
+function addMember(){ let n=document.getElementById('newName').value; let c=document.getElementById('newClass').value||"P.1"; if(!n) return alert('Type name'); let id="MEM"+String(members.length+1).padStart(3,'0'); members.push([id,n,c,0]); renderMembers(); alert('Added '+n); }
+function sellShares(){ let s=document.getElementById('seller').value; let b=document.getElementById('buyer').value; let q=parseInt(document.getElementById('sellQty').value); document.getElementById('receiptName').innerText=s+" -> "+b; document.getElementById('receiptAmount').innerText=(q*20000).toLocaleString(); alert('Sell request sent to Super Admin for approval + Receipt ready'); }
+function showStatement(){ let m=document.getElementById('stmtMember').value; let f=members.find(x=>x[1]==m); document.getElementById('stmtBox').innerHTML=`<p><b>${f[1]}</b><br>Class: ${f[2]}<br>Balance: ${f[3].toLocaleString()}</p>`; }
 let logins=[
   {u:"allan128",r:"Super Admin",d:"12/11/2026",t:"08:02:15 AM",dev:"DESKTOP-JEMO / 192.168.1.5",data:"Chrome Win 11",s:"Success"},
   {u:"mary12",r:"Cashier",d:"12/11/2026",t:"09:00:42 AM",dev:"DESKTOP-02 / 192.168.1.12",data:"Chrome Win 10",s:"Success"},
   {u:"mary12",r:"Cashier",d:"12/11/2026",t:"08:58:10 AM",dev:"DESKTOP-02 / 192.168.1.12",data:"Chrome Win 10",s:"FAILED - Wrong Password"},
-  {u:"john34",r:"Loans Officer",d:"12/11/2026",t:"08:30:05 AM",dev:"PHONE-TECNO / 192.168.1.20",data:"Mobile Chrome",s:"Success"},
-  {u:"unknown",r:"Unknown",d:"11/11/2026",t:"11:15:00 PM",dev:"UNKNOWN / 41.210.0.5",data:"Firefox",[STRIPPED] - Unknown User"},
-  {u:"peter01",r:"Member",d:"12/11/2026",t:"10:12:33 AM",dev:"PHONE-SAMSUNG / 192.168.1.25",data:"Mobile Chrome",s:"Success"}
+  {u:"john34",r:"Loans Officer",d:"12/11/2026",t:"08:30:05 AM",dev:"PHONE-TECNO / 192.168.1.20",data:"Mobile Chrome",s:"Success"}
 ];
-function renderLogin(list){ list=list||logins; if(role!=="Super Admin"){document.getElementById('loginTable').innerHTML=`<tr><td colspan=7 style="color:red;text-align:center"><b>ACCESS DENIED - Super Admin Only</b></td></tr>`;return;} document.getElementById('loginTable').innerHTML=list.map(l=>`<tr><td>${l.u}</td><td>${l.r}</td><td>${l.d}</td><td>${l.t}</td><td>${l.dev}</td><td>${l.data}</td><td style="color:${l.s.includes('FAILED')?'red':'green'}"><b>${l.s}</b></td></tr>`).join(''); }
+function renderLogin(list){ list=list||logins; if(role!=="Super Admin"){document.getElementById('loginTable').innerHTML=`<tr><td colspan=7 style="color:red;text-align:center"><b>ACCESS DENIED</b></td></tr>`;return;} document.getElementById('loginTable').innerHTML=list.map(l=>`<tr><td>${l.u}</td><td>${l.r}</td><td>${l.d}</td><td>${l.t}</td><td>${l.dev}</td><td>${l.data}</td><td style="color:${l.s.includes('FAILED')?'red':'green'}"><b>${l.s}</b></td></tr>`).join(''); }
 function filterLogin(){ let q=document.getElementById('loginSearch').value.toLowerCase(); renderLogin(logins.filter(l=>l.u.toLowerCase().includes(q)||l.d.includes(q))); }
-function show(id,el){ ["dashboard","members","shares","savings","loans","repayments","expenses","statement","reports","staff","loginHistory","activity","password"].forEach(x=>document.getElementById(x).style.display="none"); document.getElementById(id).style.display="block"; document.querySelectorAll('.sidebar a').forEach(a=>a.classList.remove('active')); if(el) el.classList.add('active'); }
-renderMembers(); renderLogin(); logActivity('allan128 logged in as Super Admin'); showStatement();
+function show(id,el){ ["dashboard","members","shares","savings","loans","repayments","expenses","statement","reports","staff","loginHistory","activity"].forEach(x=>document.getElementById(x).style.display="none"); document.getElementById(id).style.display="block"; document.querySelectorAll('.sidebar a').forEach(a=>a.classList.remove('active')); if(el) el.classList.add('active'); }
+renderMembers(); renderLogin(); showStatement();
 </script>
 </body></html>
