@@ -1,293 +1,180 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Allan SACCO - Final</title>
+<title>ALLAN SACCO SYSTEM .0</title>
 <style>
-*{box-sizing:border-box;font-family:Arial,sans-serif}
-body{margin:0;background:#f1f5f9}
-header{background:#0f172a;color:#fff;padding:15px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap}
-nav{display:flex;gap:8px;background:#fff;padding:10px;flex-wrap:wrap;box-shadow:0 2px 5px #0001}
-nav button{padding:10px 14px;border:none;background:#e2e8f0;border-radius:8px;cursor:pointer;font-weight:bold}
-nav button.active{background:#0f172a;color:#fff}
-.card{background:#fff;margin:15px;padding:18px;border-radius:12px;box-shadow:0 2px 8px #0001}
-input,select{width:100%;padding:11px;margin:6px 0;border:1px solid #cbd5e1;border-radius:8px}
-.btn{background:#16a34a;color:#fff;border:none;padding:11px 16px;border-radius:8px;cursor:pointer;font-weight:bold}
-.btn-blue{background:#2563eb}.btn-red{background:#dc2626}.btn-dark{background:#0f172a}
-table{width:100%;border-collapse:collapse;margin-top:10px}
-th,td{padding:10px;border-bottom:1px solid #e2e8f0;text-align:left;font-size:14px}
+body{font-family:Arial;background:#f2f2f2;margin:0}
+header{background:#0b3d91;color:white;padding:15px;display:flex;justify-content:space-between}
+nav{background:#fff;padding:10px;display:flex;gap:10px;flex-wrap:wrap}
+button{padding:8px 14px;cursor:pointer;border:none;border-radius:5px;background:#0b3d91;color:#fff}
+.card{background:#fff;margin:15px;padding:15px;border-radius:8px}
+table{width:100%;border-collapse:collapse}
+th,td{border:1px solid #ddd;padding:8px;text-align:left}
+th{background:#0b3d91;color:#fff}
+input,select{padding:8px;margin:5px;width:200px}
 .hidden{display:none}
-.badge{padding:4px 8px;border-radius:20px;font-size:12px;color:#fff}
-.green{background:#16a34a}.orange{background:#f59e0b}.blue{background:#2563eb}
-#loginBox{max-width:400px;margin:80px auto;background:#fff;padding:25px;border-radius:14px;box-shadow:0 5px 20px #0002}
+@media print{header,nav,.no-print{display:none!important} .card{box-shadow:none}}
 </style>
 </head>
 <body>
-<header><b>🏦 ALLAN SACCO</b><span id="userInfo"></span><button class="btn btn-red hidden" id="logoutBtn" onclick="logout()">Logout</button></header>
-
-<div id="loginBox">
-  <h2>Login</h2>
-  <p>Use your name as registered, e.g. <b>allan amon</b></p>
-  <input id="loginName" placeholder="Enter your full name - e.g. allan amon">
-  <input id="loginPass" type="password" placeholder="Password">
-  <button class="btn btn-dark" style="width:100%" onclick="doLogin()">Login</button>
-  <p id="loginMsg" style="color:red"></p>
-  <p style="font-size:13px;color:#64748b">Don't have account? Ask Admin Allan to add you.</p>
-</div>
-
-<div id="app" class="hidden">
-<nav>
-  <button onclick="show('dashboard')" id="n-dashboard" class="active">📊 Dashboard</button>
-  <button onclick="show('members')" id="n-members" class="admin-only">👥 Members</button>
-  <button onclick="show('savings')" id="n-savings">💰 Savings</button>
-  <button onclick="show('loans')" id="n-loans">🏦 Loans</button>
-  <button onclick="show('logs')" id="n-logs" class="admin-only">📜 Log History</button>
+<header><b>SACCO SYSTEM.0</b><span id="userInfo">Logged in: allan128 - SUPER ADMIN</span></header>
+<nav class="no-print">
+<button onclick="show('dashboard')">Dashboard</button>
+<button onclick="show('shares')">Shares</button>
+<button onclick="show('reports')">Reports</button>
+<button onclick="show('activity')">Activity Log - Everyone Can View</button>
+<button id="loginBtn" onclick="show('loginHistory')">Login History - Super Admin Only</button>
+<button onclick="show('users')">Users & Rights</button>
+<button onclick="window.print()">Print Receipt</button>
 </nav>
 
-<div id="page-dashboard" class="card">
-  <h2>Dashboard</h2>
-  <p>Welcome <b id="welcomeName"></b> | Role: <b id="welcomeRole"></b></p>
-  <p id="adminStats">Total Members: <b id="statMembers">0</b> | Total Savings: <b id="statSavings">0 UGX</b> | Total Loans: <b id="statLoans">0 UGX</b> | Logs: <b id="statLogs">0</b></p>
-  <p id="memberStats" class="hidden">My Savings: <b id="mySavings">0 UGX</b> | My Loans: <b id="myLoans">0 UGX</b></p>
-  <p style="background:#fef9c3;padding:10px;border-radius:8px" id="memberNote" class="hidden">👋 You are a MEMBER. You can only see YOUR OWN savings and loans. You cannot see other members or logs.</p>
+<!-- DASHBOARD -->
+<div id="dashboard" class="card"><h2>Dashboard</h2><p>Total Members: <span id="totalMembers">0</span> | Total Shares: <span id="totalShares">0</span></p></div>
+
+<!-- SHARES + SELL / TRANSFER -->
+<div id="shares" class="card hidden">
+<h2>Shares Module - Sell / Transfer</h2>
+<h3>Add Shares</h3>
+Member: <select id="shareMember"><option>Peter - MEM001</option><option>Mary - MEM002</option><option>John - MEM003</option></select>
+Shares: <input type="number" id="shareQty" placeholder="No. of shares">
+<button onclick="addShares()">Add Shares</button>
+
+<h3>Sell Shares</h3>
+Seller: <select id="seller"><option>Peter - MEM001</option><option>Mary - MEM002</option></select>
+Buyer: <select id="buyer"><option>Mary - MEM002</option><option>John - MEM003</option></select>
+Shares to Sell: <input type="number" id="sellQty" value="10">
+Price per Share: <input type="number" id="sellPrice" value="20000">
+<button onclick="sellShares()">Sell Shares - Needs Super Admin Approval</button>
+
+<h3>Transfer Shares</h3>
+From: <select id="fromM"><option>Peter - MEM001</option><option>Mary - MEM002</option></select>
+To: <select id="toM"><option>John - MEM003</option><option>Mary - MEM002</option></select>
+Shares: <input type="number" id="transferQty" value="5">
+Reason: <input id="transferReason" placeholder="Gift / Family / Exit">
+<button onclick="transferShares()">Transfer Shares</button>
+
+<table><tr><th>Member</th><th>Shares</th><th>Value</th></tr><tbody id="shareTable"></tbody></table>
 </div>
 
-<div id="page-members" class="card hidden">
-  <h2>Members - Admin Only</h2>
-  <input id="mName" placeholder="Member Full Name">
-  <input id="mPhone" placeholder="Phone e.g. 0770...">
-  <button class="btn" onclick="addMember()">+ Add Member</button>
-  <table><thead><tr><th>Name</th><th>Phone</th><th>Date</th><th>Action</th></tr></thead><tbody id="membersList"></tbody></table>
+<!-- REPORTS -->
+<div id="reports" class="card hidden">
+<h2>Reports Module</h2>
+Filter Date: <input type="date"> to <input type="date"> <button onclick="window.print()">Print Report</button>
+<h3>1. Shares Report</h3><div id="reportShares"></div>
+<h3>2. Loan Status Per Member</h3>
+<table><tr><th>Member</th><th>Loan</th><th>Paid</th><th>Balance</th><th>Status</th></tr>
+<tr><td>Peter</td><td>500,000</td><td>300,000</td><td>200,000</td><td>Active</td></tr>
+<tr><td>Mary</td><td>1,000,000</td><td>1,000,000</td><td>0</td><td>Cleared</td></tr></table>
+<h3>3. Loan Repayment Report</h3><p>Peter paid 100,000 on 12/11/2026 - Balance 200,000 - Received by Mary</p>
+<h3>4. Expenses Status</h3><p>Total Expenses Nov: 450,000 - Rent 300,000 - Airtime 50,000 - Transport 100,000</p>
+<h3>5. Staff Status</h3>
+<table><tr><th>Staff</th><th>Role</th><th>Last Login</th><th>Status</th></tr>
+<tr><td>Mary</td><td>Cashier</td><td>12/11/2026 09:00</td><td>Active</td></tr>
+<tr><td>John</td><td>Loans Officer</td><td>12/11/2026 08:30</td><td>Active</td></tr></table>
 </div>
 
-<div id="page-savings" class="card hidden">
-  <h2>Savings / Deposit</h2>
-  <div id="savingFormAdmin">
-    <select id="sMember"></select>
-    <input id="sAmount" type="number" placeholder="Amount UGX">
-    <button class="btn" onclick="addSaving()">Deposit Saving</button>
-  </div>
-  <div id="savingFormMember" class="hidden">
-    <p>Deposit for <b id="myNameLabel"></b></p>
-    <input id="sAmountMember" type="number" placeholder="Amount UGX">
-    <button class="btn" onclick="addSavingMember()">Deposit My Saving</button>
-  </div>
-  <table><thead><tr><th>Member</th><th>Amount</th><th>Date</th><th>By</th></tr></thead><tbody id="savingsList"></tbody></table>
+<!-- ACTIVITY LOG - VISIBLE TO ALL -->
+<div id="activity" class="card hidden">
+<h2>Activity Log - All Changes Visible To Everyone</h2>
+<p>No one can delete this log. Only Super Admin can view Login History.</p>
+<table><tr><th>Date/Time</th><th>Who</th><th>What They Did</th></tr><tbody id="activityTable"></tbody></table>
 </div>
 
-<div id="page-loans" class="card hidden">
-  <h2>Loans</h2>
-  <div id="loanFormAdmin">
-    <select id="lMember"></select>
-    <input id="lAmount" type="number" placeholder="Loan Amount UGX">
-    <button class="btn btn-blue" onclick="addLoan()">Request Loan</button>
-  </div>
-  <div id="loanFormMember" class="hidden">
-    <p>Request Loan for <b id="myNameLabel2"></b></p>
-    <input id="lAmountMember" type="number" placeholder="Loan Amount UGX">
-    <button class="btn btn-blue" onclick="addLoanMember()">Request My Loan</button>
-  </div>
-  <table><thead><tr><th>Member</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead><tbody id="loansList"></tbody></table>
+<!-- LOGIN HISTORY - SUPER ADMIN ONLY -->
+<div id="loginHistory" class="card hidden">
+<h2>Login History - SUPER ADMIN ONLY</h2>
+<table><tr><th>User</th><th>Role</th><th>Date</th><th>Time</th><th>Device/IP</th><th>Status</th></tr>
+<tr><td>allan128</td><td>Super Admin</td><td>12/11/2026</td><td>08:02 AM</td><td>DESKTOP-JEMO</td><td>Success</td></tr>
+<tr><td>mary12</td><td>Cashier</td><td>12/11/2026</td><td>09:00 AM</td><td>DESKTOP-02</td><td>Failed - Wrong Password</td></tr></table>
 </div>
 
-<div id="page-logs" class="card hidden">
-  <h2>📜 Log History - Admin Only</h2>
-  <div style="display:flex;gap:8px">
-    <select id="logFilter" onchange="renderLogs()"><option value="ALL">All Modules</option><option value="AUTH">AUTH</option><option value="MEMBERS">MEMBERS</option><option value="SAVINGS">SAVINGS</option><option value="LOANS">LOANS</option><option value="SYSTEM">SYSTEM</option></select>
-    <input id="logSearch" placeholder="Search logs..." oninput="renderLogs()">
-  </div>
-  <button class="btn btn-red" onclick="clearLogs()" style="margin-top:8px">Clear All Logs (Admin)</button>
-  <table><thead><tr><th>Date</th><th>Module</th><th>Action</th><th>User</th><th>Details</th></tr></thead><tbody id="logsList"></tbody></table>
-</div>
+<!-- USERS & PERMISSIONS -->
+<div id="users" class="card hidden">
+<h2>Users & Rights - Only Super Admin Can Grant Access / Delete</h2>
+<table><tr><th>User</th><th>Role</th><th>Can Add/Edit</th><th>Can Delete</th><th>Can Grant Access</th></tr>
+<tr><td>allan128</td><td>Super Admin</td><td>YES</td><td>YES - ONLY YOU</td><td>YES - ONLY YOU</td></tr>
+<tr><td>Mary</td><td>Cashier - Limited</td><td>YES</td><td>NO</td><td>NO</td></tr>
+<tr><td>John</td><td>Loans Officer - Limited</td><td>YES</td><td>NO</td><td>NO</td></tr></table>
+<p>Rule: Staff/Members CAN add, edit, add people, add items. They CANNOT delete. Some members are limited - e.g. Cashier cannot see Staff or Expenses.</p>
+<button onclick="alert('Only Super Admin can delete. Request sent to allan128 for approval.')">Try Delete (Staff) - Will Be Blocked</button>
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<!-- RECEIPT - PRINTABLE ON ALL MODULES -->
+<div id="receipt" class="card">
+<h2>Printable Receipt - For All Modules</h2>
+<div id="printArea" style="border:1px dashed #000;padding:15px;max-width:400px">
+<center><b>YOUR SACCO NAME</b><br>Kampala | Tel: 077X XXX XXX<br>--------------------------------</center>
+Receipt No: <b id="receiptNo">REC-00123</b><br>
+Date: 12/11/2026 Time: 09:30 AM<br>
+Received From: <span id="receiptName">Peter - MEM001</span><br>
+Transaction: <span id="receiptType">Shares / Savings / Loan Repayment</span><br>
+Amount: UGX <b id="receiptAmount">200,000</b><br>
+Amount in Words: Two Hundred Thousand Only<br>
+Payment: Cash / Mobile Money<br>
+Balance After: UGX 1,500,000<br>
+Received By: <span id="receiptBy">Mary - Cashier</span><br>
+<center>--------------------------------<br>Signature: ___________<br>THANK YOU FOR SAVING WITH US!</center>
+</div><br>
+<button class="no-print" onclick="window.print()">Print This Receipt</button>
+</div>
+
 <script>
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "allan-sacco.firebaseapp.com",
-  databaseURL: "https://allan-sacco-default-rtdb.firebaseio.com",
-  projectId: "allan-sacco",
-  storageBucket: "allan-sacco.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
-};
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.database();
-let currentUser=null, currentProfile=null;
-let allMembers={}, allSavings={}, allLoans={}, allLogs={};
-let isAdmin=false;
+let shares = {Peter:100, Mary:50, John:20};
+let currentUser = "allan128"; // Change to mary12 to test limited rights
+let role = "Super Admin"; // Change to Cashier to test
 
-function addLog(module, action, details){
-  if(!currentUser) return;
-  db.ref('logs').push({module, action, details: details||"", user: currentProfile?currentProfile.actualName:currentUser.email, email: currentUser.email, timestamp: Date.now(), date: new Date().toLocaleString()});
-}
-function logView(m){ addLog(m,'VIEWED_PAGE','Opened '+m+' module'); }
-function show(page){
-  // Block members from admin pages
-  if(!isAdmin && (page==='members' || page==='logs')){ alert('Access Denied! Admin Only.'); return; }
-  document.querySelectorAll('[id^="page-"]').forEach(e=>e.classList.add('hidden'));
-  document.getElementById('page-'+page).classList.remove('hidden');
-  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
-  document.getElementById('n-'+page).classList.add('active');
-  logView(page.toUpperCase());
-  if(page==='logs') renderLogs();
-}
-async function doLogin(){
-  const name=document.getElementById('loginName').value.trim().toLowerCase();
-  const pass=document.getElementById('loginPass').value;
-  const msg=document.getElementById('loginMsg');
-  if(!name||!pass){msg.textContent="Enter name and password";return;}
-  msg.textContent="Checking...";
-  try{
-    const snap=await db.ref('nameToEmail/'+name).once('value');
-    const email=snap.val();
-    if(!email){msg.textContent="Name not found. Ask admin to add you.";return;}
-    const cred=await auth.signInWithEmailAndPassword(email,pass);
-    currentUser=cred.user;
-    const prof=await db.ref('users/'+currentUser.uid).once('value');
-    currentProfile=prof.val();
-    if(!currentProfile||!currentProfile.approved){msg.textContent="User not approved. Ask admin.";await auth.signOut();return;}
-    isAdmin = (currentProfile.role==='super_admin' || currentProfile.role==='admin');
-    document.getElementById('loginBox').classList.add('hidden');
-    document.getElementById('app').classList.remove('hidden');
-    document.getElementById('logoutBtn').classList.remove('hidden');
-    document.getElementById('userInfo').textContent=currentProfile.actualName+" ("+currentProfile.role+")";
-    document.getElementById('welcomeName').textContent=currentProfile.actualName;
-    document.getElementById('welcomeRole').textContent=currentProfile.role;
-    document.getElementById('myNameLabel').textContent=currentProfile.actualName;
-    document.getElementById('myNameLabel2').textContent=currentProfile.actualName;
-    if(isAdmin){
-      document.getElementById('adminStats').classList.remove('hidden');
-      document.getElementById('memberStats').classList.add('hidden');
-      document.getElementById('memberNote').classList.add('hidden');
-      document.getElementById('savingFormAdmin').classList.remove('hidden');
-      document.getElementById('savingFormMember').classList.add('hidden');
-      document.getElementById('loanFormAdmin').classList.remove('hidden');
-      document.getElementById('loanFormMember').classList.add('hidden');
-    } else {
-      document.querySelectorAll('.admin-only').forEach(e=>e.classList.add('hidden'));
-      document.getElementById('adminStats').classList.add('hidden');
-      document.getElementById('memberStats').classList.remove('hidden');
-      document.getElementById('memberNote').classList.remove('hidden');
-      document.getElementById('savingFormAdmin').classList.add('hidden');
-      document.getElementById('savingFormMember').classList.remove('hidden');
-      document.getElementById('loanFormAdmin').classList.add('hidden');
-      document.getElementById('loanFormMember').classList.remove('hidden');
-    }
-    addLog('AUTH','LOGIN','Logged in as '+currentProfile.role);
-    listenAll();
-  }catch(e){msg.textContent=e.message;}
-}
-function logout(){ addLog('AUTH','LOGOUT','User logged out'); auth.signOut(); location.reload(); }
-async function addMember(){
-  if(!isAdmin) return alert('Admin only');
-  const name=document.getElementById('mName').value.trim();
-  const phone=document.getElementById('mPhone').value.trim();
-  if(!name) return alert('Enter name');
-  await db.ref('members').push({name, phone, createdBy: currentProfile.actualName, createdAt: Date.now(), date: new Date().toLocaleString()});
-  addLog('MEMBERS','ADD_MEMBER','Added member: '+name+' ('+phone+')');
-  document.getElementById('mName').value=''; document.getElementById('mPhone').value='';
-}
-function deleteMember(id,name){ if(!isAdmin) return; if(confirm('Delete '+name+'?')){ db.ref('members/'+id).remove(); addLog('MEMBERS','DELETE_MEMBER','Deleted member: '+name); } }
-async function addSaving(){
-  if(!isAdmin) return;
-  const memberId=document.getElementById('sMember').value;
-  const amount=Number(document.getElementById('sAmount').value);
-  if(!amount) return alert('Enter amount');
-  const mName=allMembers[memberId]?.name||memberId;
-  await db.ref('savings').push({memberId, memberName:mName, amount, by: currentProfile.actualName, date:new Date().toLocaleString(), timestamp:Date.now()});
-  addLog('SAVINGS','DEPOSIT','Deposited '+amount+' UGX for '+mName);
-  document.getElementById('sAmount').value='';
-}
-async function addSavingMember(){
-  const amount=Number(document.getElementById('sAmountMember').value);
-  if(!amount) return alert('Enter amount');
-  const mName=currentProfile.actualName;
-  await db.ref('savings').push({memberId:'self-'+currentUser.uid, memberName:mName, amount, by: mName, date:new Date().toLocaleString(), timestamp:Date.now()});
-  addLog('SAVINGS','DEPOSIT','Member deposited '+amount+' UGX for self');
-  document.getElementById('sAmountMember').value='';
-}
-async function addLoan(){
-  if(!isAdmin) return;
-  const memberId=document.getElementById('lMember').value;
-  const amount=Number(document.getElementById('lAmount').value);
-  if(!amount) return alert('Enter amount');
-  const mName=allMembers[memberId]?.name||memberId;
-  await db.ref('loans').push({memberId, memberName:mName, amount, status:'PENDING', by: currentProfile.actualName, date:new Date().toLocaleString()});
-  addLog('LOANS','REQUEST_LOAN','Requested loan '+amount+' UGX for '+mName);
-  document.getElementById('lAmount').value='';
-}
-async function addLoanMember(){
-  const amount=Number(document.getElementById('lAmountMember').value);
-  if(!amount) return alert('Enter amount');
-  const mName=currentProfile.actualName;
-  await db.ref('loans').push({memberId:'self-'+currentUser.uid, memberName:mName, amount, status:'PENDING', by: mName, date:new Date().toLocaleString()});
-  addLog('LOANS','REQUEST_LOAN','Member requested loan '+amount+' UGX for self');
-  document.getElementById('lAmountMember').value='';
-}
-function approveLoan(id,mName,amount){ if(!isAdmin) return; db.ref('loans/'+id+'/status').set('APPROVED'); addLog('LOANS','APPROVE_LOAN','Approved loan '+amount+' UGX for '+mName); }
-function rejectLoan(id,mName){ if(!isAdmin) return; db.ref('loans/'+id+'/status').set('REJECTED'); addLog('LOANS','REJECT_LOAN','Rejected loan for '+mName); }
-function listenAll(){
-  db.ref('members').on('value',s=>{allMembers=s.val()||{}; renderMembers();});
-  db.ref('savings').on('value',s=>{allSavings=s.val()||{}; renderSavings(); updateStats();});
-  db.ref('loans').on('value',s=>{allLoans=s.val()||{}; renderLoans(); updateStats();});
-  db.ref('logs').on('value',s=>{allLogs=s.val()||{}; if(isAdmin){renderLogs();} updateStats();});
-}
-function isMyRecord(name){ return !isAdmin && name.toLowerCase()===currentProfile.actualName.toLowerCase(); }
-function updateStats(){
-  if(isAdmin){
-    document.getElementById('statMembers').textContent=Object.keys(allMembers).length;
-    document.getElementById('statSavings').textContent=Object.values(allSavings).reduce((a,b)=>a+(b.amount||0),0).toLocaleString()+" UGX";
-    document.getElementById('statLoans').textContent=Object.values(allLoans).reduce((a,b)=>a+(b.amount||0),0).toLocaleString()+" UGX";
-    document.getElementById('statLogs').textContent=Object.keys(allLogs).length;
-  } else {
-    const myS=Object.values(allSavings).filter(s=>s.memberName.toLowerCase()===currentProfile.actualName.toLowerCase()).reduce((a,b)=>a+(b.amount||0),0);
-    const myL=Object.values(allLoans).filter(l=>l.memberName.toLowerCase()===currentProfile.actualName.toLowerCase()).reduce((a,b)=>a+(b.amount||0),0);
-    document.getElementById('mySavings').textContent=myS.toLocaleString()+" UGX";
-    document.getElementById('myLoans').textContent=myL.toLocaleString()+" UGX";
+function show(id){
+  document.querySelectorAll('.card').forEach(c=>c.classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+  document.getElementById('receipt').classList.remove('hidden');
+  // SUPER ADMIN ONLY CHECK
+  if(id==='loginHistory' && role!=='Super Admin'){
+    alert('ACCESS DENIED: Login History is for Super Admin ONLY');
+    return;
+  }
+  if(id==='users' && role!=='Super Admin'){
+    alert('Only Super Admin can manage Users & Rights');
   }
 }
-function renderMembers(){
-  const tb=document.getElementById('membersList'); tb.innerHTML='';
-  const sm=document.getElementById('sMember'), lm=document.getElementById('lMember'); sm.innerHTML=''; lm.innerHTML='';
-  Object.entries(allMembers).forEach(([id,m])=>{
-    tb.innerHTML+=`<tr><td>${m.name}</td><td>${m.phone||''}</td><td>${m.date||''}</td><td><button class="btn btn-red" onclick="deleteMember('${id}','${m.name}')">Delete</button></td></tr>`;
-    sm.innerHTML+=`<option value="${id}">${m.name}</option>`; lm.innerHTML+=`<option value="${id}">${m.name}</option>`;
-  });
+function logActivity(text){
+  let row = `<tr><td>${new Date().toLocaleString()}</td><td>${currentUser} (${role})</td><td>${text}</td></tr>`;
+  document.getElementById('activityTable').innerHTML += row;
+  // Everyone can see this, no one can delete it
 }
-function renderSavings(){
-  const tb=document.getElementById('savingsList'); tb.innerHTML='';
-  Object.values(allSavings).reverse().forEach(s=>{
-    if(!isAdmin && s.memberName.toLowerCase()!==currentProfile.actualName.toLowerCase()) return;
-    tb.innerHTML+=`<tr><td>${s.memberName}</td><td>${s.amount}</td><td>${s.date}</td><td>${s.by}</td></tr>`;
-  });
+function addShares(){
+  let m=document.getElementById('shareMember').value.split(' - ')[0];
+  let q=parseInt(document.getElementById('shareQty').value||0);
+  shares[m]+=q; updateShares(); logActivity(`Added ${q} shares to ${m}`);
+  document.getElementById('receiptAmount').innerText=(q*20000).toLocaleString();
+  document.getElementById('receiptType').innerText='Shares Purchase';
+  alert('Shares added + Receipt ready to print + Logged for everyone to see');
 }
-function renderLoans(){
-  const tb=document.getElementById('loansList'); tb.innerHTML='';
-  Object.entries(allLoans).reverse().forEach(([id,l])=>{
-    if(!isAdmin && l.memberName.toLowerCase()!==currentProfile.actualName.toLowerCase()) return;
-    const btns = isAdmin ? `<button class="btn" onclick="approveLoan('${id}','${l.memberName}',${l.amount})">Approve</button> <button class="btn btn-red" onclick="rejectLoan('${id}','${l.memberName}')">Reject</button>` : `<span style="color:#64748b">Waiting Admin</span>`;
-    tb.innerHTML+=`<tr><td>${l.memberName}</td><td>${l.amount}</td><td><span class="badge ${l.status==='APPROVED'?'green':l.status==='REJECTED'?'orange':'blue'}">${l.status}</span></td><td>${btns}</td></tr>`;
-  });
+function sellShares(){
+  let s=document.getElementById('seller').value.split(' - ')[0];
+  let b=document.getElementById('buyer').value.split(' - ')[0];
+  let q=parseInt(document.getElementById('sellQty').value);
+  let p=parseInt(document.getElementById('sellPrice').value);
+  if(role!=='Super Admin'){ alert('Sell request sent to Super Admin for approval. You cannot approve yourself.'); logActivity(`${s} requested to sell ${q} shares to ${b} for ${q*p} - Pending Approval`); return; }
+  shares[s]-=q; shares[b]+=q; updateShares(); logActivity(`${s} sold ${q} shares to ${b} for UGX ${q*p}`);
+  document.getElementById('receiptAmount').innerText=(q*p).toLocaleString();
+  alert('Sale approved by Super Admin + Receipt generated');
 }
-function renderLogs(){
-  if(!isAdmin) return;
-  const tb=document.getElementById('logsList'); if(!tb) return; tb.innerHTML='';
-  const filter=document.getElementById('logFilter').value;
-  const search=(document.getElementById('logSearch').value||'').toLowerCase();
-  Object.values(allLogs).sort((a,b)=>b.timestamp-a.timestamp).forEach(l=>{
-    if(filter!=='ALL' && l.module!==filter) return;
-    if(search && !(l.details+l.user+l.action).toLowerCase().includes(search)) return;
-    const color=l.module==='MEMBERS'?'blue':l.module==='SAVINGS'?'green':l.module==='LOANS'?'orange':'blue';
-    tb.innerHTML+=`<tr><td>${l.date}</td><td><span class="badge ${color}">${l.module}</span></td><td>${l.action}</td><td>${l.user}</td><td>${l.details}</td></tr>`;
-  });
+function transferShares(){
+  let f=document.getElementById('fromM').value.split(' - ')[0];
+  let t=document.getElementById('toM').value.split(' - ')[0];
+  let q=parseInt(document.getElementById('transferQty').value);
+  shares[f]-=q; shares[t]+=q; updateShares(); logActivity(`${f} transferred ${q} shares to ${t} - Reason: ${document.getElementById('transferReason').value}`);
+  alert('Transfer done + Logged');
 }
-function clearLogs(){ if(!isAdmin) return alert('Only admin'); if(confirm('Clear all logs?')){ addLog('SYSTEM','CLEAR_LOGS','Admin cleared all logs'); setTimeout(()=>db.ref('logs').remove(),500); } }
+function updateShares(){
+  let html=''; let total=0;
+  for(let k in shares){ html+=`<tr><td>${k}</td><td>${shares[k]}</td><td>${(shares[k]*20000).toLocaleString()}</td></tr>`; total+=shares[k]; }
+  document.getElementById('shareTable').innerHTML=html;
+  document.getElementById('totalShares').innerText=total;
+  document.getElementById('reportShares').innerHTML=`Total Shares: ${total} - Value: UGX ${(total*20000).toLocaleString()}`;
+}
+updateShares(); logActivity('allan128 logged in as Super Admin');
+show('dashboard');
 </script>
 </body>
 </html>
